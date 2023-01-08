@@ -7,6 +7,9 @@
 </a>
 <a href='https://ko-fi.com/E1E6G64LS' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
+## Purpose
+This library was created to make drop down menus easier to implement. This library was initially created for personal use so documentation is lacking.
+
 ## Example
 ```lua
 local menu = LibStub("Krowi_Menu-1.0");
