@@ -1,6 +1,7 @@
+---@diagnostic disable: undefined-global, need-check-nil
 --[[
 	Krowi's Menu License
-        Copyright ©2020-2022 The contents of this library, excluding third-party resources, are
+        Copyright ©2020 The contents of this library, excluding third-party resources, are
         copyrighted to their authors with all rights reserved.
 
         This library is free to use and the authors hereby grants you the following rights:
@@ -165,7 +166,7 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				if checked then
 						somethingChecked = true;
 						local icon = GetChild(frame, frame:GetName(), "Icon");
-						if (button.iconOnly and icon and button.icon) then
+						if (button.iconOnly and button.icon) then
 							UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
 						elseif useValue then
 							UIDropDownMenu_SetText(frame, button.value);
