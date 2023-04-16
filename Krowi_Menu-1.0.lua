@@ -65,6 +65,14 @@ function lib:Clear()
     menu = {};
 end
 
+function lib:GetMenu()
+    return menu;
+end
+
+function lib:GetMenuFrame()
+    return menuFrame;
+end
+
 function lib:Add(item)
     tinsert(menu, Convert(item));
 end
