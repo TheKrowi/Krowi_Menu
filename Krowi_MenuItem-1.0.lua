@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global
 --[[
 	Krowi's Menu License
         Copyright ©2020 The contents of this library, excluding third-party resources, are
@@ -19,7 +18,7 @@
         the copyright holders.
 ]]
 
-local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 2);
+local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 3);
 
 if not lib then
 	return;

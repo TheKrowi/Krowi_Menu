@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global, need-check-nil
 --[[
 	Krowi's Menu License
         Copyright ©2020 The contents of this library, excluding third-party resources, are
@@ -19,7 +18,7 @@
         the copyright holders.
 ]]
 
-local lib = LibStub:NewLibrary("Krowi_Menu-1.0", 2);
+local lib = LibStub:NewLibrary("Krowi_Menu-1.0", 3);
 
 if not lib then
 	return;
@@ -71,6 +70,13 @@ end
 
 function lib:AddFull(info)
     self:Add(menuItem:New(info));
+end
+
+function lib:AddTitle(text)
+	self:AddFull({
+		Text = text,
+		IsTitle = true
+	});
 end
 
 function lib:AddSeparator()
@@ -181,10 +187,14 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 							UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
 						elseif useValue then
 							UIDropDownMenu_SetText(frame, button.value);
-							icon:Hide();
+							if icon then
+								icon:Hide();
+							end
 						else
 							UIDropDownMenu_SetText(frame, button:GetText());
-							icon:Hide();
+							if icon then
+								icon:Hide();
+							end
 						end
 					button:LockHighlight();
 					checkImage:Show();
@@ -206,7 +216,9 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if somethingChecked == nil then
 		UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6);
 		local icon = GetChild(frame, frame:GetName(), "Icon");
-		icon:Hide();
+		if icon then
+			icon:Hide();
+		end
 	end
 	if not frame.noResize then
 		for i=1, UIDROPDOWNMENU_MAXBUTTONS do
