@@ -95,20 +95,30 @@ local function Initialize(frame, level, menuList)
 	end
 end
 
-function lib:Open(anchor, offsetX, offsetY)
+function lib:Open(anchor, offsetX, offsetY, point, relativePoint, frameStrata, frameLevel)
     -- Make sure optional values are set to default if not used
 	anchor = anchor or "cursor";
-	offsetX = offsetX or 0;
-    offsetY = offsetY or 0;
 
 	menuFrame.displayMode = "MENU";
+	menuFrame.xOffset = offsetX;
+	menuFrame.yOffset = offsetY;
+	menuFrame.point = point;
+	menuFrame.relativePoint = relativePoint;
+	UIDropDownMenu_SetFrameStrata(menuFrame, frameStrata or "FULLSCREEN_DIALOG");
+	if frameStrata and not frameLevel then
+		menuFrame:Raise();
+	end
+	if frameLevel then
+		menuFrame:SetFrameLevel(frameLevel);
+	end
+
 	UIDropDownMenu_Initialize(menuFrame, Initialize, "MENU", nil, menu);
 	ToggleDropDownMenu(1, nil, menuFrame, anchor, offsetX, offsetY, menu, nil, nil);
 end
 
-function lib:Toggle(anchor, offsetX, offsetY)
+function lib:Toggle(anchor, offsetX, offsetY, point, relativePoint, frameStrata, frameLevel)
 	if not DropDownList1:IsShown() then
-		self:Open(anchor, offsetX, offsetY);
+		self:Open(anchor, offsetX, offsetY, point, relativePoint, frameStrata, frameLevel);
 	else
 		DropDownList1:Hide();
 	end
