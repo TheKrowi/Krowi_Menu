@@ -27,11 +27,12 @@ end
 local popupDialog = LibStub("Krowi_PopopDialog-1.0");
 
 lib.__index = lib;
-function lib:New(info)
+function lib:New(info, hideOnClick)
     local instance = setmetatable({}, lib);
     if type(info) == "string" then
         info = {
-            Text = info
+            Text = info,
+            KeepShownOnClick = not hideOnClick
         };
     end
     for k, v in next, info do
