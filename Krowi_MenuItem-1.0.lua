@@ -14,13 +14,13 @@
 
 ---@diagnostic disable: undefined-global
 
-local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 4);
+local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 5);
 
 if not lib then
 	return;
 end
 
-local popupDialog = LibStub("Krowi_PopopDialog-1.0");
+local popupDialog = LibStub("Krowi_PopupDialog-1.0");
 
 lib.__index = lib;
 function lib:New(info, hideOnClick)

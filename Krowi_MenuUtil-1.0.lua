@@ -15,7 +15,7 @@
 ---@diagnostic disable: undefined-global
 ---@diagnostic disable: duplicate-set-field
 
-local lib = LibStub:NewLibrary("Krowi_MenuUtil-1.0", 4);
+local lib = LibStub:NewLibrary("Krowi_MenuUtil-1.0", 5);
 
 if not lib then
 	return;
