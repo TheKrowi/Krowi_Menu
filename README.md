@@ -1,5 +1,5 @@
-![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.2-28ae7e?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
-[![CurseForge](https://img.shields.io/badge/curseforge-download-F16436?style=for-the-badge&logo=curseforge&logoColor=white)](https://www.curseforge.com/wow/addons/krowi-menu) [![Wago](https://img.shields.io/badge/Wago-Download-c1272d?style=for-the-badge)](https://addons.wago.io/addons/ZKxqdvGk)<br>
+![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
+[![CurseForge](https://img.shields.io/badge/curseforge-download-F16436?style=for-the-badge&logo=curseforge&logoColor=white)](https://www.curseforge.com/wow/addons/krowi-menu) [![Wago](https://img.shields.io/badge/Wago-Download-c1272d?style=for-the-badge)](https://addons.wago.io/addons/krowi-menu)<br>
 [![Discord](https://img.shields.io/badge/discord-join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/mdBFQJYeQZ) [![PayPal](https://img.shields.io/badge/paypal-donate-002991.svg?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=9QEDV37APQ6YJ)
 
 A lightweight menu library for World of Warcraft addon development that simplifies creating dropdown menus with support for titles, separators, nested items, and custom styling.
@@ -24,6 +24,15 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 - **Cross-Version Compatibility**: Unified API for both modern (Mainline) and Classic WoW versions
 - **Automatic Detection**: Detects game version and uses appropriate menu system
 - **Simplified Interface**: Consistent methods across all WoW versions
+
+### Menu Builder (`Krowi_MenuBuilder-1.0`)
+- **High-Level Abstraction**: Simplified API for building complex menus with checkboxes, radio buttons, and filters
+- **Callback-Based Architecture**: Flexible callback system for handling menu interactions
+- **Smart Defaults**: Automatic integration with Krowi_Util for common operations
+- **Callback Helper**: `BindCallbacks` utility eliminates boilerplate when binding object methods
+- **Build Version Filters**: Built-in support for creating version filter menus
+- **Cross-Version Support**: Works seamlessly on both Modern and Classic WoW
+- **Instance-Based**: Create multiple independent menu builders with isolated state
 
 ## Usage Examples
 
@@ -71,6 +80,42 @@ parent:AddFull({
 
 menu:Add(parent);
 menu:Open("cursor");
+```
+
+### MenuBuilder Example
+
+```lua
+local MenuBuilder = LibStub("Krowi_MenuBuilder-1.0");
+
+-- Configure MenuBuilder with callbacks
+local config = {
+    callbacks = MenuBuilder.BindCallbacks(self, {
+        GetCheckBoxStateText = "GetCheckBoxStateText",
+        OnCheckboxSelect = "OnCheckboxSelect",
+        OnRadioSelect = "OnRadioSelect"
+    }),
+    translations = {
+        ["Select All"] = "Select All",
+        ["Deselect All"] = "Deselect All"
+    }
+};
+
+local builder = MenuBuilder:New(config);
+
+-- Build menu with checkboxes and radio buttons
+local menu = builder:GetMenu();
+builder:CreateTitle(menu, "Filter Options");
+builder:CreateCheckbox(menu, "Show Completed", filters, {"Completed"}, true);
+builder:CreateCheckbox(menu, "Show In Progress", filters, {"InProgress"}, true);
+builder:CreateDivider(menu);
+
+local sortMenu = builder:CreateSubmenuButton(menu, "Sort By");
+builder:CreateRadio(sortMenu, "Name", filters, {"SortBy", "Criteria"}, true);
+builder:CreateRadio(sortMenu, "Date", filters, {"SortBy", "Criteria"}, true);
+builder:AddChildMenu(menu, sortMenu);
+
+-- Show the menu
+builder:Show(frameAnchor, 0, 0);
 ```
 
 ## API Reference
@@ -161,6 +206,83 @@ local menuUtil = LibStub("Krowi_MenuUtil-1.0")
 
 **Note:** MenuUtil automatically detects whether the game is running Mainline or Classic and uses the appropriate menu system. On Mainline, it uses the modern menu API. On Classic versions, it uses the `Krowi_MenuItem-1.0` library.
 
+### Krowi_MenuBuilder-1.0
+
+#### Creating a MenuBuilder Instance
+```lua
+local MenuBuilder = LibStub("Krowi_MenuBuilder-1.0")
+local builder = MenuBuilder:New(config)
+```
+
+#### Configuration Object
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `callbacks` | table | Yes | Table of callback functions (see Callback Reference) |
+| `translations` | table | No | Table of localized strings (defaults to English) |
+| `uniqueTag` | string | No | Unique identifier for this instance (auto-generated if not provided) |
+
+#### Callback Reference
+
+**Checkbox Callbacks:**
+- `GetCheckBoxStateText(text, filters, keys)` - Returns modified text with state indicators
+- `KeyIsTrue(filters, keys)` - Returns whether a filter key is true (defaults to `Krowi_Util.ReadNestedKeys`)
+- `OnCheckboxSelect(filters, keys, ...)` - Called when checkbox is clicked
+
+**Radio Callbacks:**
+- `KeyEqualsText(text, filters, keys)` - Returns whether key equals text (defaults to `Krowi_Util.ReadNestedKeys`)
+- `OnRadioSelect(text, filters, keys, ...)` - Called when radio button is selected
+
+**Build Version Filter Callbacks:**
+- `IsMinorVersionChecked(filters, minor)` - Returns whether all patches in minor version are checked
+- `OnMinorVersionSelect(filters, minor)` - Called when minor version is clicked
+- `IsMajorVersionChecked(filters, major)` - Returns whether all versions in major are checked
+- `OnMajorVersionSelect(filters, major)` - Called when major version is clicked
+- `OnAllVersionsSelect(filters, value)` - Called when Select/Deselect All is clicked
+- `CreateBuildVersionFilterGroups(version, filters)` - Builds the version filter menu structure
+
+**Other Callbacks:**
+- `SetRewardsFilters(filters, value)` - Called for reward filter Select/Deselect All
+- `SetFactionFilters(filters, value)` - Called for faction filter Select/Deselect All
+
+#### MenuBuilder Utility Functions
+
+| Function | Parameters | Returns | Description |
+|----------|------------|---------|-------------|
+| `BindCallbacks(obj, methodNames)` | `obj` (table), `methodNames` (table) | table | Creates callback table by binding object methods. `methodNames` maps callback names to method names |
+
+#### MenuBuilder Methods
+
+**Menu Management:**
+| Function | Parameters | Description |
+|----------|------------|-------------|
+| `GetMenu()` | - | Returns the current menu object |
+| `Show(anchor, offsetX, offsetY)` | `anchor` (frame), `offsetX` (number), `offsetY` (number) | Shows menu attached to anchor frame (Modern only) |
+| `ShowPopup(createFunc, anchor)` | `createFunc` (function), `anchor` (frame) | Shows popup menu, calling createFunc(builder) to build it (Classic only) |
+| `SetupMenuForModern(filterFrame)` | `filterFrame` (frame) | Sets up Modern WoW dropdown menu on filter frame |
+
+**Menu Building (Standardized Parameter Order: `menu, text, filters, keys, ...`):**
+| Function | Parameters | Description |
+|----------|------------|-------------|
+| `CreateTitle(menu, text)` | `menu`, `text` (string) | Creates a title (non-clickable header) |
+| `CreateDivider(menu)` | `menu` | Creates a separator line |
+| `CreateButton(menu, text, func)` | `menu`, `text` (string), `func` (function) | Creates a simple button |
+| `CreateCheckbox(menu, text, filters, keys, checkTabs)` | `menu`, `text` (string), `filters` (table), `keys` (table), `checkTabs` (boolean) | Creates a checkbox item. `keys` is array path to filter value |
+| `CreateRadio(menu, text, filters, keys, checkTabs)` | `menu`, `text` (string), `filters` (table), `keys` (table), `checkTabs` (boolean) | Creates a radio button item |
+| `CreateSubmenuButton(menu, text, func, isEnabled)` | `menu`, `text` (string), `func` (function), `isEnabled` (boolean) | Creates a button that opens a submenu |
+| `AddChildMenu(menu, child)` | `menu`, `child` (menu/MenuItem) | Adds child menu to parent |
+| `CreateButtonAndAdd(menu, text, func, isEnabled)` | `menu`, `text` (string), `func` (function), `isEnabled` (boolean) | Creates and adds button in one call |
+
+**Specialized Menu Builders:**
+| Function | Parameters | Description |
+|----------|------------|-------------|
+| `CreateBuildVersionFilter(filters, menu)` | `filters` (table), `menu` | Creates build/patch version filter submenu |
+| `CreateSelectDeselectAllVersions(version, filters)` | `version` (menu), `filters` (table) | Adds Select/Deselect All buttons for versions |
+| `CreateSelectDeselectAllRewards(menu, text, filters, value)` | `menu`, `text` (string), `filters` (table), `value` (boolean) | Creates reward filter toggle button |
+| `CreateSelectDeselectAllFactions(menu, text, filters, value)` | `menu`, `text` (string), `filters` (table), `value` (boolean) | Creates faction filter toggle button |
+| `CreateMinorVersionGroup(majorGroup, filters, major, minor)` | `majorGroup` (menu), `filters` (table), `major` (table), `minor` (table) | Creates minor version submenu group |
+| `CreateMajorVersionGroup(version, filters, major)` | `version` (menu), `filters` (table), `major` (table) | Creates major version submenu group |
+
 ## Use Cases
 - Right-click context menus
 - Dropdown selection menus
@@ -172,4 +294,4 @@ local menuUtil = LibStub("Krowi_MenuUtil-1.0")
 
 ## Requirements
 - LibStub
-- Krowi_PopupDialog-1.0 (for external links in `Krowi_MenuItem`)
+- Krowi_Util-1.0 (optional, for default MenuBuilder callbacks)
