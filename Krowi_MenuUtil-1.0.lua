@@ -15,11 +15,16 @@
 ---@diagnostic disable: undefined-global
 ---@diagnostic disable: duplicate-set-field
 
-local lib = LibStub:NewLibrary("Krowi_MenuUtil-1.0", 5);
+local MAJOR, MINOR = "Krowi_MenuUtil-1.0", KROWI_MENU_LIBRARY_MINOR
+local lib = LibStub:NewLibrary(MAJOR, MINOR);
 
 if not lib then
 	return;
 end
+
+-- Store version constants
+lib.MAJOR = MAJOR
+lib.MINOR = MINOR
 
 do -- Modern
     function lib:CreateTitle(menu, text)

@@ -14,11 +14,19 @@
 
 ---@diagnostic disable: undefined-global
 
-local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 5);
+-- Define shared minor version for all Krowi_Menu libraries
+KROWI_MENU_LIBRARY_MINOR = KROWI_MENU_LIBRARY_MINOR or 6
+
+local MAJOR, MINOR = "Krowi_MenuItem-1.0", KROWI_MENU_LIBRARY_MINOR
+local lib = LibStub:NewLibrary(MAJOR, MINOR);
 
 if not lib then
 	return;
 end
+
+-- Store version constants
+lib.MAJOR = MAJOR
+lib.MINOR = MINOR
 
 lib.__index = lib;
 function lib:New(info, hideOnClick)
@@ -33,15 +41,6 @@ function lib:New(info, hideOnClick)
         instance[k] = v;
     end
     return instance;
-end
-
-function lib:NewExtLink(text, externalLink)
-    return self:New({
-        Text = text,
-        Func = function()
-            LibStub("Krowi_PopupDialog-1.0").ShowExternalLink(externalLink);
-        end
-    });
 end
 
 function lib:Add(item)
@@ -65,8 +64,4 @@ end
 
 function lib:AddSeparator()
     return self:AddFull({IsSeparator = true});
-end
-
-function lib:AddExtLinkFull(text, externalLink)
-    return self:Add(self:NewExtLink(text, externalLink));
 end

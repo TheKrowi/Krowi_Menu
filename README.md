@@ -137,12 +137,10 @@ local menuItem = LibStub("Krowi_MenuItem-1.0")
 | Function | Parameters | Returns | Description |
 |----------|------------|---------|-------------|
 | `New(info, hideOnClick)` | `info` (table/string), `hideOnClick` (boolean) | MenuItem | Creates a new menu item. If info is string, uses it as Text |
-| `NewExtLink(text, externalLink)` | `text` (string), `externalLink` (string) | MenuItem | Creates a menu item that shows an external link popup |
 | `Add(item)` | `item` (MenuItem) | MenuItem | Adds a child item to this menu item |
 | `AddFull(info)` | `info` (table) | MenuItem | Creates and adds a child from info table |
 | `AddTitle(text)` | `text` (string) | - | Adds a title child to this menu item |
 | `AddSeparator()` | - | MenuItem | Adds a separator child to this menu item |
-| `AddExtLinkFull(text, externalLink)` | `text` (string), `externalLink` (string) | MenuItem | Creates and adds an external link child |
 
 ### Krowi_MenuUtil-1.0
 

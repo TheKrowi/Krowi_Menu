@@ -20,9 +20,13 @@
 -- A cross-version menu builder for WoW Classic and Modern
 -- ####################################################################
 
-local MAJOR, MINOR = "Krowi_MenuBuilder-1.0", 1
+local MAJOR, MINOR = "Krowi_MenuBuilder-1.0", KROWI_MENU_LIBRARY_MINOR
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
+
+-- Store version constants
+lib.MAJOR = MAJOR
+lib.MINOR = MINOR
 
 -- ####################################################################
 -- MenuBuilder Class
@@ -32,8 +36,65 @@ local MenuBuilder = {}
 MenuBuilder.__index = MenuBuilder
 
 -- ####################################################################
+-- Utility Functions
+-- ####################################################################
+
+--[[
+    Helper function to bind object methods to callbacks
+    Eliminates boilerplate when all callbacks simply forward to methods on an object
+    
+    @param obj table The object whose methods will be bound
+    @param methodNames table Map of callback names to method names
+    @return table Map of callback names to bound functions
+    
+    Example:
+    callbacks = lib.BindCallbacks(self, {
+        GetCheckBoxStateText = "GetCheckBoxStateText",
+        KeyIsTrue = "KeyIsTrue",
+    })
+]]
+function lib.BindCallbacks(obj, methodNames)
+    local callbacks = {}
+    for callbackName, methodName in pairs(methodNames) do
+        callbacks[callbackName] = function(...)
+            return obj[methodName](obj, ...)
+        end
+    end
+    return callbacks
+end
+
+-- ####################################################################
 -- Constructor
 -- ####################################################################
+
+-- Local helper to set up default callbacks using Krowi_Util if available
+local function SetupDefaultCallbacks(instance)
+    local KrowiUtil = LibStub and LibStub("Krowi_Util-1.0", true)
+    if not KrowiUtil or not KrowiUtil.ReadNestedKeys then
+        return
+    end
+    
+    -- Default KeyIsTrue: reads nested keys from filters table
+    if not instance.callbacks.KeyIsTrue then
+        instance.callbacks.KeyIsTrue = function(filters, keys)
+            return KrowiUtil.ReadNestedKeys(filters, keys)
+        end
+    end
+    
+    -- Default KeyEqualsText: reads nested keys and compares to text
+    if not instance.callbacks.KeyEqualsText then
+        instance.callbacks.KeyEqualsText = function(text, filters, keys)
+            return KrowiUtil.ReadNestedKeys(filters, keys) == text
+        end
+    end
+end
+
+-- Local helper to set default translations
+local function SetupDefaultTranslations(instance)
+    instance.translations["Select All"] = instance.translations["Select All"] or "Select All"
+    instance.translations["Deselect All"] = instance.translations["Deselect All"] or "Deselect All"
+    instance.translations["Version"] = instance.translations["Version"] or "Version"
+end
 
 --[[
     Creates a new MenuBuilder instance
@@ -80,10 +141,8 @@ function lib:New(config)
     -- Generate unique tag for this instance
     instance.uniqueTag = config.uniqueTag or tostring(instance):match("0x(%x+)") or tostring(math.random(100000, 999999))
     
-    -- Set default translations
-    instance.translations["Select All"] = instance.translations["Select All"] or "Select All"
-    instance.translations["Deselect All"] = instance.translations["Deselect All"] or "Deselect All"
-    instance.translations["Version"] = instance.translations["Version"] or "Version"
+    SetupDefaultTranslations(instance)
+    SetupDefaultCallbacks(instance)
     
     instance:Init()
     
@@ -237,7 +296,7 @@ function MenuBuilder:CreateDivider(menu)
     menu:CreateDivider()
 end
 
-function MenuBuilder:CreateCheckbox(text, filters, keys, menu, ...)
+function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
     
@@ -252,7 +311,7 @@ function MenuBuilder:CreateCheckbox(text, filters, keys, menu, ...)
     )
 end
 
-function MenuBuilder:CreateRadio(text, filters, keys, menu, ...)
+function MenuBuilder:CreateRadio(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
     
@@ -325,7 +384,7 @@ function MenuBuilder:CreateBuildVersionFilter(filters, menu)
 end
 
 -- Rewards/Factions
-function MenuBuilder:CreateSelectDeselectAllRewards(text, filters, value, menu)
+function MenuBuilder:CreateSelectDeselectAllRewards(menu, text, filters, value)
     menu = menu or self:GetMenu()
     
     local button = menu:CreateButton(
@@ -337,7 +396,7 @@ function MenuBuilder:CreateSelectDeselectAllRewards(text, filters, value, menu)
     button:SetResponse(MenuResponse.Refresh)
 end
 
-function MenuBuilder:CreateSelectDeselectAllFactions(text, filters, value, menu)
+function MenuBuilder:CreateSelectDeselectAllFactions(menu, text, filters, value)
     menu = menu or self:GetMenu()
     
     local button = menu:CreateButton(
@@ -370,11 +429,6 @@ end
 
 function MenuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
     return self:CreateSubmenuButton(menu, text, func, isEnabled)
-end
-
-function MenuBuilder:CreateButton(text, onClick, menu)
-    menu = menu or self:GetMenu()
-    return menu:CreateButton(text, onClick)
 end
 
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
@@ -428,7 +482,7 @@ function MenuBuilder:CreateDivider(menu)
     menu:AddSeparator()
 end
 
-function MenuBuilder:CreateCheckbox(text, filters, keys, menu, ...)
+function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
     
@@ -447,7 +501,7 @@ function MenuBuilder:CreateCheckbox(text, filters, keys, menu, ...)
     })
 end
 
-function MenuBuilder:CreateRadio(text, filters, keys, menu, ...)
+function MenuBuilder:CreateRadio(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
     
@@ -531,7 +585,7 @@ function MenuBuilder:CreateBuildVersionFilter(filters, menu)
 end
 
 -- Rewards/Factions
-function MenuBuilder:CreateSelectDeselectAllRewards(text, filters, value, menu)
+function MenuBuilder:CreateSelectDeselectAllRewards(menu, text, filters, value)
     menu = menu or self:GetMenu()
     
     menu:AddFull({
@@ -544,7 +598,7 @@ function MenuBuilder:CreateSelectDeselectAllRewards(text, filters, value, menu)
     })
 end
 
-function MenuBuilder:CreateSelectDeselectAllFactions(text, filters, value, menu)
+function MenuBuilder:CreateSelectDeselectAllFactions(menu, text, filters, value)
     menu = menu or self:GetMenu()
     
     menu:AddFull({
@@ -581,17 +635,8 @@ function MenuBuilder:AddChildMenu(menu, child)
 end
 
 function MenuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
-    self:AddChildMenu(menu, self:CreateSubmenuButton(nil, text, func, isEnabled))
-end
-
-function MenuBuilder:CreateButton(text, onClick, menu)
     menu = menu or self:GetMenu()
-    
-    menu:AddFull({
-        Text = text,
-        Func = onClick,
-        KeepShownOnClick = true
-    })
+    self:AddChildMenu(menu, self:CreateSubmenuButton(nil, text, func, isEnabled))
 end
 
 lib.MenuBuilder = MenuBuilder
