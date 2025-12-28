@@ -47,7 +47,7 @@ do -- Modern
     end
 end
 
-if LibStub("Krowi_Util-1.0").IsMainline then
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     return;
 end
 

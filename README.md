@@ -175,4 +175,3 @@ local menuUtil = LibStub("Krowi_MenuUtil-1.0")
 ## Requirements
 - LibStub
 - Krowi_PopupDialog-1.0 (for external links in `Krowi_MenuItem`)
-- Krowi_Util-1.0 (for version detection in `Krowi_MenuUtil`)

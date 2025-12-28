@@ -20,8 +20,6 @@ if not lib then
 	return;
 end
 
-local popupDialog = LibStub("Krowi_PopupDialog-1.0");
-
 lib.__index = lib;
 function lib:New(info, hideOnClick)
     local instance = setmetatable({}, lib);
@@ -41,7 +39,7 @@ function lib:NewExtLink(text, externalLink)
     return self:New({
         Text = text,
         Func = function()
-            popupDialog.ShowExternalLink(externalLink);
+            LibStub("Krowi_PopupDialog-1.0").ShowExternalLink(externalLink);
         end
     });
 end

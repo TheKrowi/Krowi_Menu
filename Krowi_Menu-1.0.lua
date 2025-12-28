@@ -14,7 +14,7 @@
 
 ---@diagnostic disable: undefined-global
 
-local lib = LibStub:NewLibrary("Krowi_Menu-1.0", 4);
+local lib = LibStub:NewLibrary("Krowi_Menu-1.0", 6);
 
 if not lib then
 	return;
