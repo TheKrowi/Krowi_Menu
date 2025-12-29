@@ -15,44 +15,19 @@
 ---@diagnostic disable: undefined-global
 ---@diagnostic disable: duplicate-set-field
 
--- ####################################################################
--- Krowi_MenuBuilder-1.0
--- A cross-version menu builder for WoW Classic and Modern
--- ####################################################################
+-- Krowi_MenuBuilder-1.0: Cross-version menu builder for WoW Classic and Modern
 
 local MAJOR, MINOR = "Krowi_MenuBuilder-1.0", KROWI_MENU_LIBRARY_MINOR
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
--- Store version constants
 lib.MAJOR = MAJOR
 lib.MINOR = MINOR
-
--- ####################################################################
--- MenuBuilder Class
--- ####################################################################
 
 local MenuBuilder = {}
 MenuBuilder.__index = MenuBuilder
 
--- ####################################################################
--- Utility Functions
--- ####################################################################
-
---[[
-    Helper function to bind object methods to callbacks
-    Eliminates boilerplate when all callbacks simply forward to methods on an object
-    
-    @param obj table The object whose methods will be bound
-    @param methodNames table Map of callback names to method names
-    @return table Map of callback names to bound functions
-    
-    Example:
-    callbacks = lib.BindCallbacks(self, {
-        GetCheckBoxStateText = "GetCheckBoxStateText",
-        KeyIsTrue = "KeyIsTrue",
-    })
-]]
+-- Utility: Binds object methods to callback functions (see Description.md for usage)
 function lib.BindCallbacks(obj, methodNames)
     local callbacks = {}
     for callbackName, methodName in pairs(methodNames) do
@@ -63,25 +38,18 @@ function lib.BindCallbacks(obj, methodNames)
     return callbacks
 end
 
--- ####################################################################
--- Constructor
--- ####################################################################
-
--- Local helper to set up default callbacks using Krowi_Util if available
 local function SetupDefaultCallbacks(instance)
     local KrowiUtil = LibStub and LibStub("Krowi_Util-1.0", true)
     if not KrowiUtil or not KrowiUtil.ReadNestedKeys then
         return
     end
-    
-    -- Default KeyIsTrue: reads nested keys from filters table
+
     if not instance.callbacks.KeyIsTrue then
         instance.callbacks.KeyIsTrue = function(filters, keys)
             return KrowiUtil.ReadNestedKeys(filters, keys)
         end
     end
-    
-    -- Default KeyEqualsText: reads nested keys and compares to text
+
     if not instance.callbacks.KeyEqualsText then
         instance.callbacks.KeyEqualsText = function(filters, keys, value)
             return KrowiUtil.ReadNestedKeys(filters, keys) == value
@@ -89,71 +57,29 @@ local function SetupDefaultCallbacks(instance)
     end
 end
 
--- Local helper to set default translations
 local function SetupDefaultTranslations(instance)
     instance.translations["Select All"] = instance.translations["Select All"] or "Select All"
     instance.translations["Deselect All"] = instance.translations["Deselect All"] or "Deselect All"
     instance.translations["Version"] = instance.translations["Version"] or "Version"
 end
 
---[[
-    Creates a new MenuBuilder instance
-    
-    @param config table Configuration object with the following structure:
-    {
-        callbacks = {
-            -- Required callbacks for checkbox functionality
-            GetCheckBoxStateText = function(text, filters, keys) return string end,
-            KeyIsTrue = function(filters, keys) return bool end,
-            OnCheckboxSelect = function(filters, keys, ...) end, -- Varargs for custom user data
-            
-            -- Required callbacks for radio functionality
-            KeyEqualsText = function(filters, keys, value) return bool end,
-            OnRadioSelect = function(text, filters, keys, ...) end, -- Varargs for custom user data
-            
-            -- Required callback for build version filter
-            IsMinorVersionChecked = function(filters, minor) return bool end,
-            OnMinorVersionSelect = function(filters, minor) end,
-            IsMajorVersionChecked = function(filters, major) return bool end,
-            OnMajorVersionSelect = function(filters, major) end,
-            OnAllVersionsSelect = function(filters, value) end,
-            CreateBuildVersionFilterGroups = function(version, filters, menuBuilder) end,
-            
-            -- Required callbacks for rewards/factions
-            SetRewardsFilters = function(filters, value) end,
-            SetFactionFilters = function(filters, value) end,
-        },
-        translations = {
-            -- Optional translations, defaults to English
-            ["Select All"] = "Select All",
-            ["Deselect All"] = "Deselect All",
-            ["Version"] = "Version",
-        },
-        MenuItemClass = menuItemClass -- Required for Classic version
-    }
-]]
 function lib:New(config)
     local instance = setmetatable({}, MenuBuilder)
     instance.config = config or {}
     instance.callbacks = config.callbacks or {}
     instance.translations = config.translations or {}
-    
+
     -- Generate unique tag for this instance
     instance.uniqueTag = config.uniqueTag or tostring(instance):match("0x(%x+)") or tostring(math.random(100000, 999999))
-    
+
     SetupDefaultTranslations(instance)
     SetupDefaultCallbacks(instance)
-    
+
     instance:Init()
-    
+
     return instance
 end
 
--- ####################################################################
--- Callback Helper Methods (Version-Agnostic)
--- ####################################################################
-
--- Checkbox Callbacks
 function MenuBuilder:GetCheckBoxStateText(text, filters, keys)
     if self.callbacks.GetCheckBoxStateText then
         return self.callbacks.GetCheckBoxStateText(text, filters, keys)
@@ -174,7 +100,6 @@ function MenuBuilder:OnCheckboxSelect(filters, keys, ...)
     end
 end
 
--- Radio Callbacks
 function MenuBuilder:KeyEqualsText(filters, keys, value)
     if self.callbacks.KeyEqualsText then
         return self.callbacks.KeyEqualsText(filters, keys, value)
@@ -182,13 +107,12 @@ function MenuBuilder:KeyEqualsText(filters, keys, value)
     return false
 end
 
-function MenuBuilder:OnRadioSelect(text, filters, keys, ...)
+function MenuBuilder:OnRadioSelect(filters, keys, value, ...)
     if self.callbacks.OnRadioSelect then
-        self.callbacks.OnRadioSelect(text, filters, keys, ...)
+        self.callbacks.OnRadioSelect(filters, keys, value, ...)
     end
 end
 
--- Build Version Filter Callbacks
 function MenuBuilder:IsMinorVersionChecked(filters, minor)
     if self.callbacks.IsMinorVersionChecked then
         return self.callbacks.IsMinorVersionChecked(filters, minor)
@@ -221,35 +145,24 @@ function MenuBuilder:OnAllVersionsSelect(filters, value)
     end
 end
 
--- Rewards/Factions Callbacks
-function MenuBuilder:SetRewardsFilters(filters, value)
-    if self.callbacks.SetRewardsFilters then
-        self.callbacks.SetRewardsFilters(filters, value)
+function MenuBuilder:OnAllSelect(filters, keys, value)
+    if self.callbacks.OnAllSelect then
+        self.callbacks.OnAllSelect(filters, keys, value)
     end
 end
 
-function MenuBuilder:SetFactionFilters(filters, value)
-    if self.callbacks.SetFactionFilters then
-        self.callbacks.SetFactionFilters(filters, value)
-    end
-end
+-- Modern Implementation (WOW_PROJECT_MAINLINE)
 
--- ####################################################################
--- Modern Implementation
--- ####################################################################
-
--- Initialization
 function MenuBuilder:Init()
     self.menuGenerator = nil
     self.currentMenu = nil
 end
 
--- Setup
 function MenuBuilder:SetupMenuForModern(button)
     if not button.SetupMenu then
         error("Button must have SetupMenu method (WowStyle1FilterDropdownMixin)")
     end
-    
+
     button:SetupMenu(function(owner, menu)
         menu:SetTag("KROWI_MENUBUILDER_FILTER_DROPDOWN_" .. self.uniqueTag)
         self.currentMenu = menu
@@ -259,38 +172,32 @@ function MenuBuilder:SetupMenuForModern(button)
     end)
 end
 
--- Public API
 function MenuBuilder:Show(anchor, offsetX, offsetY)
-    -- Modern doesn't need manual showing, handled by SetupMenu
-    -- This is a no-op, menu shows when button is clicked
 end
 
 function MenuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
-    -- Modern uses MenuUtil.CreateContextMenu for standalone popups
     local menuFunc = createMenuFunc or self.CreateMenu
     if not menuFunc then
         error("ShowPopup requires a createMenuFunc parameter or self.CreateMenu function")
     end
-    
+
     local menu = MenuUtil.CreateContextMenu(anchor or UIParent, function(owner, menuObj)
-        menuObj:SetTag("KROWI_MENUBUILDER_STANDALONE_POPUP_" .. self.uniqueTag);
-        self.currentMenu = menuObj;
-        menuFunc(self);
-    end);
+        menuObj:SetTag("KROWI_MENUBUILDER_STANDALONE_POPUP_" .. self.uniqueTag)
+        self.currentMenu = menuObj
+        menuFunc(self)
+    end)
     if anchor then
-        menu:SetPoint("TOPLEFT", anchor or UIParent, "BOTTOMLEFT", offsetX or 0, offsetY or 0);
+        menu:SetPoint("TOPLEFT", anchor or UIParent, "BOTTOMLEFT", offsetX or 0, offsetY or 0)
     end
 end
 
 function MenuBuilder:Close()
-    -- Modern menus close automatically
 end
 
 function MenuBuilder:GetMenu()
     return self.currentMenu
 end
 
--- Menu Creation
 function MenuBuilder:CreateDivider(menu)
     menu = menu or self:GetMenu()
     menu:CreateDivider()
@@ -299,7 +206,7 @@ end
 function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
-    
+
     return menu:CreateCheckbox(
         self:GetCheckBoxStateText(text, filters, keys),
         function()
@@ -313,7 +220,7 @@ end
 
 function MenuBuilder:CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)
     menu = menu or self:GetMenu()
-    
+
     return menu:CreateCheckbox(
         text,
         isCheckedFunc,
@@ -325,7 +232,7 @@ function MenuBuilder:CreateRadio(menu, text, filters, keys, value, ...)
     menu = menu or self:GetMenu()
     value = value or text
     local userData = {...}
-    
+
     local button = menu:CreateRadio(
         text,
         function()
@@ -341,7 +248,7 @@ end
 
 function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
     menu = menu or self:GetMenu()
-    
+
     local button = menu:CreateRadio(
         text,
         isSelectedFunc,
@@ -351,7 +258,6 @@ function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
     return button
 end
 
--- Build Version Filter
 function MenuBuilder:CreateMinorVersionGroup(majorGroup, filters, major, minor)
     return majorGroup:CreateCheckbox(
         major.Major .. "." .. minor.Minor .. ".x",
@@ -378,7 +284,7 @@ end
 
 function MenuBuilder:CreateSelectDeselectAllVersions(version, filters)
     self:CreateDivider(version)
-    
+
     local selectAll = version:CreateButton(
         self.translations["Select All"],
         function()
@@ -386,7 +292,7 @@ function MenuBuilder:CreateSelectDeselectAllVersions(version, filters)
         end
     )
     selectAll:SetResponse(MenuResponse.Refresh)
-    
+
     local deselectAll = version:CreateButton(
         self.translations["Deselect All"],
         function()
@@ -398,7 +304,7 @@ end
 
 function MenuBuilder:CreateBuildVersionFilter(filters, menu)
     menu = menu or self:GetMenu()
-    
+
     local version = menu:CreateButton(self.translations["Version"])
     if self.callbacks.CreateBuildVersionFilterGroups then
         self.callbacks.CreateBuildVersionFilterGroups(version, filters, self)
@@ -406,32 +312,24 @@ function MenuBuilder:CreateBuildVersionFilter(filters, menu)
     self:CreateSelectDeselectAllVersions(version, filters)
 end
 
--- Rewards/Factions
-function MenuBuilder:CreateSelectDeselectAllRewards(menu, text, filters, value)
+function MenuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, callback)
     menu = menu or self:GetMenu()
-    
+    callback = callback or self.OnAllSelect
+
     local button = menu:CreateButton(
         text,
         function()
-            self:SetRewardsFilters(filters, value)
+            callback(self, filters, keys, value)
         end
     )
     button:SetResponse(MenuResponse.Refresh)
 end
 
-function MenuBuilder:CreateSelectDeselectAllFactions(menu, text, filters, value)
-    menu = menu or self:GetMenu()
-    
-    local button = menu:CreateButton(
-        text,
-        function()
-            self:SetFactionFilters(filters, value)
-        end
-    )
-    button:SetResponse(MenuResponse.Refresh)
+function MenuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
+    self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
+    self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
 end
 
--- Utility
 function MenuBuilder:CreateTitle(menu, text)
     menu = menu or self:GetMenu()
     menu:CreateTitle(text)
@@ -446,8 +344,16 @@ function MenuBuilder:CreateSubmenuButton(menu, text, func, isEnabled)
     return button
 end
 
+function MenuBuilder:CreateSubmenuRadio(menu, text, isSelectedFunc, onClickFunc, isEnabled)
+    menu = menu or self:GetMenu()
+    local button = self:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
+    if button and isEnabled == false then
+        button:SetEnabled(false)
+    end
+    return button
+end
+
 function MenuBuilder:AddChildMenu(menu, child)
-    -- Modern menus don't need explicit child addition
 end
 
 function MenuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
@@ -459,16 +365,12 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     return
 end
 
--- ####################################################################
--- Classic Implementation
--- ####################################################################
+-- Classic Implementation (non-Mainline)
 
--- Initialization
 function MenuBuilder:Init()
     self.rootMenu = LibStub("Krowi_Menu-1.0")
 end
 
--- Public API
 function MenuBuilder:Show(anchor, offsetX, offsetY)
     self.rootMenu:Clear()
     if self.CreateMenu then
@@ -478,12 +380,11 @@ function MenuBuilder:Show(anchor, offsetX, offsetY)
 end
 
 function MenuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
-    -- Classic clears and rebuilds menu each time
     local menuFunc = createMenuFunc or self.CreateMenu
     if not menuFunc then
         error("ShowPopup requires a createMenuFunc parameter or self.CreateMenu function")
     end
-    
+
     self.rootMenu:Clear()
     menuFunc(self)
     self.rootMenu:Toggle(anchor or "cursor", offsetX or 0, offsetY or 0)
@@ -499,7 +400,6 @@ function MenuBuilder:GetMenu()
     return self.rootMenu
 end
 
--- Menu Creation
 function MenuBuilder:CreateDivider(menu)
     menu = menu or self:GetMenu()
     menu:AddSeparator()
@@ -508,7 +408,7 @@ end
 function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
-    
+
     menu:AddFull({
         Text = self:GetCheckBoxStateText(text, filters, keys),
         Checked = function()
@@ -526,7 +426,7 @@ end
 
 function MenuBuilder:CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)
     menu = menu or self:GetMenu()
-    
+
     menu:AddFull({
         Text = text,
         Checked = isCheckedFunc,
@@ -544,7 +444,7 @@ function MenuBuilder:CreateRadio(menu, text, filters, keys, value, ...)
     menu = menu or self:GetMenu()
     value = value or text
     local userData = {...}
-    
+
     menu:AddFull({
         Text = text,
         Checked = function()
@@ -561,7 +461,7 @@ end
 
 function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
     menu = menu or self:GetMenu()
-    
+
     menu:AddFull({
         Text = text,
         Checked = isSelectedFunc,
@@ -574,7 +474,6 @@ function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
     })
 end
 
--- Build Version Filter
 function MenuBuilder:CreateMinorVersionGroup(majorGroup, filters, major, minor)
     return majorGroup:AddFull({
         Text = major.Major .. "." .. minor.Minor .. ".x",
@@ -609,7 +508,7 @@ end
 
 function MenuBuilder:CreateSelectDeselectAllVersions(version, filters)
     self:CreateDivider(version)
-    
+
     version:AddFull({
         Text = self.translations["Select All"],
         Func = function()
@@ -630,7 +529,7 @@ end
 
 function MenuBuilder:CreateBuildVersionFilter(filters, menu)
     menu = menu or self:GetMenu()
-    
+
     local version = self:CreateSubmenuButton(menu, self.translations["Version"])
     if self.callbacks.CreateBuildVersionFilterGroups then
         self.callbacks.CreateBuildVersionFilterGroups(version, filters, self)
@@ -639,34 +538,25 @@ function MenuBuilder:CreateBuildVersionFilter(filters, menu)
     self:AddChildMenu(menu, version)
 end
 
--- Rewards/Factions
-function MenuBuilder:CreateSelectDeselectAllRewards(menu, text, filters, value)
+function MenuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, callback)
     menu = menu or self:GetMenu()
-    
+    callback = callback or self.OnAllSelect
+
     menu:AddFull({
         Text = text,
         Func = function()
-            self:SetRewardsFilters(filters, value)
+            callback(self, filters, keys, value)
             UIDropDownMenu_RefreshAll(UIDROPDOWNMENU_OPEN_MENU)
         end,
         KeepShownOnClick = true
     })
 end
 
-function MenuBuilder:CreateSelectDeselectAllFactions(menu, text, filters, value)
-    menu = menu or self:GetMenu()
-    
-    menu:AddFull({
-        Text = text,
-        Func = function()
-            self:SetFactionFilters(filters, value)
-            UIDropDownMenu_RefreshAll(UIDROPDOWNMENU_OPEN_MENU)
-        end,
-        KeepShownOnClick = true
-    })
+function MenuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
+    self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
+    self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
 end
 
--- Utility
 function MenuBuilder:CreateTitle(menu, text)
     menu = menu or self:GetMenu()
     menu:AddTitle(text)
@@ -677,6 +567,21 @@ function MenuBuilder:CreateSubmenuButton(menu, text, func, isEnabled)
     return LibStub("Krowi_MenuItem-1.0"):New({
         Text = text,
         Func = func,
+        Disabled = isEnabled == false
+    })
+end
+
+function MenuBuilder:CreateSubmenuRadio(menu, text, isSelectedFunc, onClickFunc, isEnabled)
+    menu = menu or self:GetMenu()
+    return LibStub("Krowi_MenuItem-1.0"):New({
+        Text = text,
+        Checked = isSelectedFunc,
+        Func = function()
+            onClickFunc()
+            self.rootMenu:SetSelectedName(text)
+        end,
+        NotCheckable = false,
+        KeepShownOnClick = true,
         Disabled = isEnabled == false
     })
 end
