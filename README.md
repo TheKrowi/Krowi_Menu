@@ -110,8 +110,8 @@ builder:CreateCheckbox(menu, "Show In Progress", filters, {"InProgress"}, true);
 builder:CreateDivider(menu);
 
 local sortMenu = builder:CreateSubmenuButton(menu, "Sort By");
-builder:CreateRadio(sortMenu, "Name", filters, {"SortBy", "Criteria"}, true);
-builder:CreateRadio(sortMenu, "Date", filters, {"SortBy", "Criteria"}, true);
+builder:CreateRadio(sortMenu, "Name", filters, {"SortBy", "Criteria"}, "name", true);
+builder:CreateRadio(sortMenu, "Date", filters, {"SortBy", "Criteria"}, "date", true);
 builder:AddChildMenu(menu, sortMenu);
 
 -- Show the menu
@@ -230,8 +230,8 @@ local builder = MenuBuilder:New(config)
 - `OnCheckboxSelect(filters, keys, ...)` - Called when checkbox is clicked
 
 **Radio Callbacks:**
-- `KeyEqualsText(text, filters, keys)` - Returns whether key equals text (defaults to `Krowi_Util.ReadNestedKeys`)
-- `OnRadioSelect(text, filters, keys, ...)` - Called when radio button is selected
+- `KeyEqualsText(filters, keys, value)` - Returns whether key equals value (defaults to `Krowi_Util.ReadNestedKeys`)
+- `OnRadioSelect(filters, keys, value, ...)` - Called when radio button is selected
 
 **Build Version Filter Callbacks:**
 - `IsMinorVersionChecked(filters, minor)` - Returns whether all patches in minor version are checked
@@ -267,8 +267,10 @@ local builder = MenuBuilder:New(config)
 | `CreateTitle(menu, text)` | `menu`, `text` (string) | Creates a title (non-clickable header) |
 | `CreateDivider(menu)` | `menu` | Creates a separator line |
 | `CreateButton(menu, text, func)` | `menu`, `text` (string), `func` (function) | Creates a simple button |
-| `CreateCheckbox(menu, text, filters, keys, checkTabs)` | `menu`, `text` (string), `filters` (table), `keys` (table), `checkTabs` (boolean) | Creates a checkbox item. `keys` is array path to filter value |
-| `CreateRadio(menu, text, filters, keys, checkTabs)` | `menu`, `text` (string), `filters` (table), `keys` (table), `checkTabs` (boolean) | Creates a radio button item |
+| `CreateCheckbox(menu, text, filters, keys, ...)` | `menu`, `text` (string), `filters` (table), `keys` (table), varargs | Creates a checkbox item. `keys` is array path to filter value, varargs passed to callback |
+| `CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)` | `menu`, `text` (string), `isCheckedFunc` (function), `onClickFunc` (function) | Creates a custom checkbox with direct callback functions |
+| `CreateRadio(menu, text, filters, keys, value, ...)` | `menu`, `text` (string), `filters` (table), `keys` (table), `value` (any), varargs | Creates a radio button. `value` is stored value (defaults to text), varargs passed to callback |
+| `CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)` | `menu`, `text` (string), `isSelectedFunc` (function), `onClickFunc` (function) | Creates a custom radio button with direct callback functions |
 | `CreateSubmenuButton(menu, text, func, isEnabled)` | `menu`, `text` (string), `func` (function), `isEnabled` (boolean) | Creates a button that opens a submenu |
 | `AddChildMenu(menu, child)` | `menu`, `child` (menu/MenuItem) | Adds child menu to parent |
 | `CreateButtonAndAdd(menu, text, func, isEnabled)` | `menu`, `text` (string), `func` (function), `isEnabled` (boolean) | Creates and adds button in one call |

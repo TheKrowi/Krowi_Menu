@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.7 - 2025-12-29
+### Changed
+- MenuBuilder: Fixed KeyEqualsText callback parameter order to match documentation (filters, keys, value)
+- MenuBuilder: Updated CreateRadio methods to support custom value parameter separate from display text
+
+### Added
+- MenuBuilder: CreateCustomCheckbox method for custom checkbox implementations
+- MenuBuilder: CreateCustomRadio method for custom radio button implementations
+
 ## 1.0.6 - 2025-12-28
 ### Added
 - MenuBuilder: BindCallbacks utility function to eliminate callback boilerplate

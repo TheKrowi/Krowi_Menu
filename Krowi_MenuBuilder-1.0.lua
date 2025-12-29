@@ -83,8 +83,8 @@ local function SetupDefaultCallbacks(instance)
     
     -- Default KeyEqualsText: reads nested keys and compares to text
     if not instance.callbacks.KeyEqualsText then
-        instance.callbacks.KeyEqualsText = function(text, filters, keys)
-            return KrowiUtil.ReadNestedKeys(filters, keys) == text
+        instance.callbacks.KeyEqualsText = function(filters, keys, value)
+            return KrowiUtil.ReadNestedKeys(filters, keys) == value
         end
     end
 end
@@ -108,7 +108,7 @@ end
             OnCheckboxSelect = function(filters, keys, ...) end, -- Varargs for custom user data
             
             -- Required callbacks for radio functionality
-            KeyEqualsText = function(text, filters, keys) return bool end,
+            KeyEqualsText = function(filters, keys, value) return bool end,
             OnRadioSelect = function(text, filters, keys, ...) end, -- Varargs for custom user data
             
             -- Required callback for build version filter
@@ -175,9 +175,9 @@ function MenuBuilder:OnCheckboxSelect(filters, keys, ...)
 end
 
 -- Radio Callbacks
-function MenuBuilder:KeyEqualsText(text, filters, keys)
+function MenuBuilder:KeyEqualsText(filters, keys, value)
     if self.callbacks.KeyEqualsText then
-        return self.callbacks.KeyEqualsText(text, filters, keys)
+        return self.callbacks.KeyEqualsText(filters, keys, value)
     end
     return false
 end
@@ -311,18 +311,41 @@ function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     )
 end
 
-function MenuBuilder:CreateRadio(menu, text, filters, keys, ...)
+function MenuBuilder:CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)
     menu = menu or self:GetMenu()
+    
+    return menu:CreateCheckbox(
+        text,
+        isCheckedFunc,
+        onClickFunc
+    )
+end
+
+function MenuBuilder:CreateRadio(menu, text, filters, keys, value, ...)
+    menu = menu or self:GetMenu()
+    value = value or text
     local userData = {...}
     
     local button = menu:CreateRadio(
         text,
         function()
-            return self:KeyEqualsText(text, filters, keys)
+            return self:KeyEqualsText(filters, keys, value)
         end,
         function()
-            self:OnRadioSelect(text, filters, keys, unpack(userData))
+            self:OnRadioSelect(filters, keys, value, unpack(userData))
         end
+    )
+    button:SetResponse(MenuResponse.Refresh)
+    return button
+end
+
+function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
+    menu = menu or self:GetMenu()
+    
+    local button = menu:CreateRadio(
+        text,
+        isSelectedFunc,
+        onClickFunc
     )
     button:SetResponse(MenuResponse.Refresh)
     return button
@@ -501,17 +524,49 @@ function MenuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     })
 end
 
-function MenuBuilder:CreateRadio(menu, text, filters, keys, ...)
+function MenuBuilder:CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)
     menu = menu or self:GetMenu()
+    
+    menu:AddFull({
+        Text = text,
+        Checked = isCheckedFunc,
+        Func = function()
+            onClickFunc()
+            UIDropDownMenu_RefreshAll(UIDROPDOWNMENU_OPEN_MENU)
+        end,
+        IsNotRadio = true,
+        NotCheckable = false,
+        KeepShownOnClick = true
+    })
+end
+
+function MenuBuilder:CreateRadio(menu, text, filters, keys, value, ...)
+    menu = menu or self:GetMenu()
+    value = value or text
     local userData = {...}
     
     menu:AddFull({
         Text = text,
         Checked = function()
-            return self:KeyEqualsText(text, filters, keys)
+            return self:KeyEqualsText(filters, keys, value)
         end,
         Func = function()
-            self:OnRadioSelect(text, filters, keys, unpack(userData))
+            self:OnRadioSelect(filters, keys, value, unpack(userData))
+            self.rootMenu:SetSelectedName(text)
+        end,
+        NotCheckable = false,
+        KeepShownOnClick = true
+    })
+end
+
+function MenuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
+    menu = menu or self:GetMenu()
+    
+    menu:AddFull({
+        Text = text,
+        Checked = isSelectedFunc,
+        Func = function()
+            onClickFunc()
             self.rootMenu:SetSelectedName(text)
         end,
         NotCheckable = false,
