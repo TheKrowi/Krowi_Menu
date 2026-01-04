@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 - MenuBuilder: SetElementEnabled method for dynamically enabling/disabling menu elements (buttons, checkboxes, radio buttons) after creation
 
+### Changed
+- MenuBuilder: Simplified menu tag generation - removed verbose prefixes, now uses uniqueTag directly
+- MenuItem: Changed KROWI_MENU_LIBRARY_MINOR initialization to direct assignment for consistency
+
 ## 1.0.8 - 2025-12-29
 ### Added
 - MenuBuilder: CreateSubmenuRadio method for creating radio buttons in submenus with custom callbacks

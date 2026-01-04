@@ -15,7 +15,7 @@
 ---@diagnostic disable: undefined-global
 
 -- Define shared minor version for all Krowi_Menu libraries
-KROWI_MENU_LIBRARY_MINOR = KROWI_MENU_LIBRARY_MINOR or 9
+KROWI_MENU_LIBRARY_MINOR = 9
 
 local MAJOR, MINOR = "Krowi_MenuItem-1.0", KROWI_MENU_LIBRARY_MINOR
 local lib = LibStub:NewLibrary(MAJOR, MINOR);

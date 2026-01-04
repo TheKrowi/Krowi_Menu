@@ -164,7 +164,7 @@ function MenuBuilder:SetupMenuForModern(button)
     end
 
     button:SetupMenu(function(owner, menu)
-        menu:SetTag("KROWI_MENUBUILDER_FILTER_DROPDOWN_" .. self.uniqueTag)
+        menu:SetTag(self.uniqueTag)
         self.currentMenu = menu
         if self.CreateMenu then
             self:CreateMenu()
@@ -182,7 +182,7 @@ function MenuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
     end
 
     local menu = MenuUtil.CreateContextMenu(anchor or UIParent, function(owner, menuObj)
-        menuObj:SetTag("KROWI_MENUBUILDER_STANDALONE_POPUP_" .. self.uniqueTag)
+        menuObj:SetTag(self.uniqueTag)
         self.currentMenu = menuObj
         menuFunc(self)
     end)
