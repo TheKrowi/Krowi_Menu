@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.9 - 2026-01-04
+### Added
+- MenuBuilder: SetElementEnabled method for dynamically enabling/disabling menu elements (buttons, checkboxes, radio buttons) after creation
+
 ## 1.0.8 - 2025-12-29
 ### Added
 - MenuBuilder: CreateSubmenuRadio method for creating radio buttons in submenus with custom callbacks

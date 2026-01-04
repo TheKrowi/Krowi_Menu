@@ -335,6 +335,12 @@ function MenuBuilder:CreateTitle(menu, text)
     menu:CreateTitle(text)
 end
 
+function MenuBuilder:SetElementEnabled(element, isEnabled)
+    if element and element.SetEnabled then
+        element:SetEnabled(isEnabled ~= false)
+    end
+end
+
 function MenuBuilder:CreateSubmenuButton(menu, text, func, isEnabled)
     menu = menu or self:GetMenu()
     local button = menu:CreateButton(text, func)
@@ -560,6 +566,12 @@ end
 function MenuBuilder:CreateTitle(menu, text)
     menu = menu or self:GetMenu()
     menu:AddTitle(text)
+end
+
+function MenuBuilder:SetElementEnabled(element, isEnabled)
+    if element then
+        element.Disabled = isEnabled == false
+    end
 end
 
 function MenuBuilder:CreateSubmenuButton(menu, text, func, isEnabled)
