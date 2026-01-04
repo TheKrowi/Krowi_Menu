@@ -416,6 +416,7 @@ local config = {
 | `ShowPopup(createFunc, anchor, offsetX, offsetY)` | `createFunc` (function), `anchor` (frame), `offsetX` (number), `offsetY` (number) | Shows standalone popup menu. Calls `createFunc(builder)` to build menu structure |
 | `Close()` | - | **Classic only**: Closes the menu. **Modern**: No-op (auto-managed) |
 | `SetupMenuForModern(button)` | `button` (frame with SetupMenu) | **Modern only**: Configures dropdown button. Requires button to have `SetupMenu` method (WowStyle1FilterDropdownMixin) |
+| `SetElementEnabled(element, isEnabled)` | `element` (button/checkbox/radio), `isEnabled` (boolean) | Enables or disables a menu element dynamically. **Modern**: Uses `element:SetEnabled()`. **Classic**: Sets `element.Disabled` property |
 
 **Menu Building:**
 
