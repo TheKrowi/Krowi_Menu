@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - MenuBuilder: SetElementEnabled method for dynamically enabling/disabling menu elements (buttons, checkboxes, radio buttons) after creation
 
 ### Changed
+- MenuBuilder: Renamed internal table from `MenuBuilder` to `menuBuilder` (lowercase) for consistency
 - MenuBuilder: Simplified menu tag generation - removed verbose prefixes, now uses uniqueTag directly
 - MenuItem: Changed KROWI_MENU_LIBRARY_MINOR initialization to direct assignment for consistency
 
