@@ -323,11 +323,17 @@ function menuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, c
         end
     )
     button:SetResponse(MenuResponse.Refresh)
+    return button
 end
 
 function menuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
     self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
     self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
+end
+
+function menuBuilder:CreateButton(menu, text, func)
+    menu = menu or self:GetMenu()
+    return menu:CreateButton(text, func)
 end
 
 function menuBuilder:CreateTitle(menu, text)
@@ -415,7 +421,7 @@ function menuBuilder:CreateCheckbox(menu, text, filters, keys, ...)
     menu = menu or self:GetMenu()
     local userData = {...}
 
-    menu:AddFull({
+    return menu:AddFull({
         Text = self:GetCheckBoxStateText(text, filters, keys),
         Checked = function()
             return self:KeyIsTrue(filters, keys)
@@ -433,7 +439,7 @@ end
 function menuBuilder:CreateCustomCheckbox(menu, text, isCheckedFunc, onClickFunc)
     menu = menu or self:GetMenu()
 
-    menu:AddFull({
+    return menu:AddFull({
         Text = text,
         Checked = isCheckedFunc,
         Func = function()
@@ -451,7 +457,7 @@ function menuBuilder:CreateRadio(menu, text, filters, keys, value, ...)
     value = value or text
     local userData = {...}
 
-    menu:AddFull({
+    return menu:AddFull({
         Text = text,
         Checked = function()
             return self:KeyEqualsText(filters, keys, value)
@@ -468,7 +474,7 @@ end
 function menuBuilder:CreateCustomRadio(menu, text, isSelectedFunc, onClickFunc)
     menu = menu or self:GetMenu()
 
-    menu:AddFull({
+    return menu:AddFull({
         Text = text,
         Checked = isSelectedFunc,
         Func = function()
@@ -548,7 +554,7 @@ function menuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, c
     menu = menu or self:GetMenu()
     callback = callback or self.OnAllSelect
 
-    menu:AddFull({
+    return menu:AddFull({
         Text = text,
         Func = function()
             callback(self, filters, keys, value)
@@ -561,6 +567,15 @@ end
 function menuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
     self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
     self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
+end
+
+function menuBuilder:CreateButton(menu, text, func)
+    menu = menu or self:GetMenu()
+    return menu:AddFull({
+        Text = text,
+        Func = func,
+        NotCheckable = true
+    })
 end
 
 function menuBuilder:CreateTitle(menu, text)
@@ -608,7 +623,9 @@ end
 
 function menuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
     menu = menu or self:GetMenu()
-    self:AddChildMenu(menu, self:CreateSubmenuButton(nil, text, func, isEnabled))
+    local button = self:CreateSubmenuButton(nil, text, func, isEnabled)
+    self:AddChildMenu(menu, button)
+    return button
 end
 
 lib.MenuBuilder = menuBuilder

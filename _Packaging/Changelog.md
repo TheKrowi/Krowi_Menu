@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.10 - 2026-01-07
+### Added
+- MenuBuilder: CreateButton method for creating simple buttons (both Modern and Classic implementations)
+
+### Changed
+- MenuBuilder: All Create* methods now consistently return the created element for further manipulation
+
 ## 1.0.9 - 2026-01-04
 ### Added
 - MenuBuilder: SetElementEnabled method for dynamically enabling/disabling menu elements (buttons, checkboxes, radio buttons) after creation
