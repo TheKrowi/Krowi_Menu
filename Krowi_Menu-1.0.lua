@@ -244,7 +244,17 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     return
 end
 
-local function RepositionSubmenu(listFrame)
+hooksecurefunc("ToggleDropDownMenu", function(level)
+	if not level or level <= 1 then
+		return
+	end
+
+	local listFrame = GetCurrentEnvironment()["DropDownList"..level]
+
+	if not listFrame or not listFrame:IsShown() then
+		return
+	end
+
 	if not listFrame:IsShown() then
 		return
 	end
@@ -290,21 +300,4 @@ local function RepositionSubmenu(listFrame)
 	local newYOffset = (projectedBottom < 0) and -projectedBottom or 0
 
 	listFrame:SetPoint(newPoint, anchorFrame, newRelativePoint, xOff, newYOffset)
-end
-
-hooksecurefunc("ToggleDropDownMenu", function(level)
-	if not level or level <= 1 then
-		return
-	end
-
-	local listFrame = GetCurrentEnvironment()["DropDownList"..level]
-
-	if not listFrame or not listFrame:IsShown() then
-		return
-	end
-
-	-- Wait a frame to ensure menu is fully positioned by original function
-	C_Timer.After(0, function()
-		RepositionSubmenu(listFrame)
-	end)
 end)
