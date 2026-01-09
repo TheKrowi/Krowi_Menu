@@ -37,47 +37,47 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 ### Basic Menu Setup
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0");
-local pages = {}; -- Table with data
+local menu = LibStub("Krowi_Menu-1.0")
+local pages = {} -- Table with data
 
-menu:Clear(); -- Reset menu
+menu:Clear() -- Reset menu
 
-menu:AddFull({Text = "View Pages", IsTitle = true});
+menu:AddFull({Text = "View Pages", IsTitle = true})
 for i, _ in next, pages do
   menu:AddFull({
     Text = (pages[i].IsViewed and "" or "|T132049:0|t") .. pages[i].SubTitle,
     Func = function()
       -- Some function here
     end
-  });
+  })
 end
 
-menu:Open();
+menu:Open()
 ```
 
 ### Advanced Example with Nested Menus
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0");
-local menuItem = LibStub("Krowi_MenuItem-1.0");
+local menu = LibStub("Krowi_Menu-1.0")
+local menuItem = LibStub("Krowi_MenuItem-1.0")
 
-menu:Clear();
+menu:Clear()
 
 -- Create a parent item with children
-local parent = menuItem:New({Text = "Settings"});
+local parent = menuItem:New({Text = "Settings"})
 parent:AddFull({
   Text = "Enable Feature",
   Checked = true,
   Func = function() print("Feature toggled") end
-});
-parent:AddSeparator();
+})
+parent:AddSeparator()
 parent:AddFull({
   Text = "Reset to Defaults",
   Func = function() print("Reset") end
-});
+})
 
-menu:Add(parent);
-menu:Open("cursor");
+menu:Add(parent)
+menu:Open("cursor")
 ```
 
 ### MenuBuilder Example

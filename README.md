@@ -1,4 +1,4 @@
-![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
+![Midnight](https://img.shields.io/badge/Midnight-12.0.0-a335ee?style=for-the-badge) ![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
 [![CurseForge](https://img.shields.io/badge/curseforge-download-F16436?style=for-the-badge&logo=curseforge&logoColor=white)](https://www.curseforge.com/wow/addons/krowi-menu) [![Wago](https://img.shields.io/badge/Wago-Download-c1272d?style=for-the-badge)](https://addons.wago.io/addons/krowi-menu)<br>
 [![Discord](https://img.shields.io/badge/discord-join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/mdBFQJYeQZ) [![PayPal](https://img.shields.io/badge/paypal-donate-002991.svg?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=9QEDV37APQ6YJ)
 
@@ -10,6 +10,7 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 - **Simple API**: Easy-to-use methods for building menus programmatically
 - **Flexible Menu Items**: Support for titles, separators, checkable items, and disabled states
 - **Nested Menus**: Create hierarchical menu structures with children
+- **Smart Positioning**: Automatic submenu repositioning to keep menus on-screen (Classic)
 - **Custom Styling**: Control menu positioning, frame strata, and frame levels
 - **Selection State**: Track and refresh selected menu items
 - **LibStub Support**: Standard LibStub library structure for dependency management
@@ -40,47 +41,47 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 ### Basic Menu Setup
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0");
-local pages = {}; -- Table with data
+local menu = LibStub("Krowi_Menu-1.0")
+local pages = {} -- Table with data
 
-menu:Clear(); -- Reset menu
+menu:Clear() -- Reset menu
 
-menu:AddFull({Text = "View Pages", IsTitle = true});
+menu:AddFull({Text = "View Pages", IsTitle = true})
 for i, _ in next, pages do
   menu:AddFull({
     Text = (pages[i].IsViewed and "" or "|T132049:0|t") .. pages[i].SubTitle,
     Func = function()
       -- Some function here
     end
-  });
+  })
 end
 
-menu:Open();
+menu:Open()
 ```
 
 ### Advanced Example with Nested Menus
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0");
-local menuItem = LibStub("Krowi_MenuItem-1.0");
+local menu = LibStub("Krowi_Menu-1.0")
+local menuItem = LibStub("Krowi_MenuItem-1.0")
 
-menu:Clear();
+menu:Clear()
 
 -- Create a parent item with children
-local parent = menuItem:New({Text = "Settings"});
+local parent = menuItem:New({Text = "Settings"})
 parent:AddFull({
   Text = "Enable Feature",
   Checked = true,
   Func = function() print("Feature toggled") end
-});
-parent:AddSeparator();
+})
+parent:AddSeparator()
 parent:AddFull({
   Text = "Reset to Defaults",
   Func = function() print("Reset") end
-});
+})
 
-menu:Add(parent);
-menu:Open("cursor");
+menu:Add(parent)
+menu:Open("cursor")
 ```
 
 ### MenuBuilder Example
