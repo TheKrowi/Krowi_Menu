@@ -12,9 +12,9 @@
 #    SOFTWARE.
 #
 
-## Interface: 110207, 50503, 11508
+## Interface: 120000, 110207, 50503, 11508
 ## Title: Krowi's |cFF1D92C2Menu|r
-## Version: 1.0.10
+## Version: 1.0.11
 ## Author: Krowi
 ## Notes: A lightweight menu library for creating dropdown menus with support for titles, separators, and nested items
 ## X-Discord-Invite-Link: https://discord.gg/mdBFQJYeQZ

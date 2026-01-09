@@ -6,6 +6,7 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 - **Simple API**: Easy-to-use methods for building menus programmatically
 - **Flexible Menu Items**: Support for titles, separators, checkable items, and disabled states
 - **Nested Menus**: Create hierarchical menu structures with children
+- **Smart Positioning**: Automatic submenu repositioning to keep menus on-screen (Classic)
 - **Custom Styling**: Control menu positioning, frame strata, and frame levels
 - **Selection State**: Track and refresh selected menu items
 - **LibStub Support**: Standard LibStub library structure for dependency management

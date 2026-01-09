@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.11 - 2026-01-09
+### Added
+- Menu (Classic): Automatic submenu repositioning to prevent menus from appearing off-screen vertically
+
 ## 1.0.10 - 2026-01-07
 ### Added
 - MenuBuilder: CreateButton method for creating simple buttons (both Modern and Classic implementations)
