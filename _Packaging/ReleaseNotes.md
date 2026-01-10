@@ -1,2 +1,2 @@
-### Added (1.0.11)
-- Menu (Classic): Automatic submenu repositioning to prevent menus from appearing off-screen vertically
+### TBC Classic (1.0.12)
+- Support added

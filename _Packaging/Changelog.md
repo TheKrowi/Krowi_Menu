@@ -1,8 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.12 - 2026-01-10
+### TBC Classic
+- Support added
+
 ## 1.0.11 - 2026-01-09
 ### Added
+- Support for WoW 12.0.0 (Midnight)
 - Menu (Classic): Automatic submenu repositioning to prevent menus from appearing off-screen vertically
 
 ## 1.0.10 - 2026-01-07
