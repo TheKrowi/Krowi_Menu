@@ -1,34 +1,21 @@
 --[[
     Copyright (c) 2025 Krowi
-
-    All Rights Reserved unless otherwise explicitly stated.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+    Licensed under the terms of the LICENSE file in this repository.
 ]]
 
 ---@diagnostic disable: undefined-global
 ---@diagnostic disable: duplicate-set-field
 
--- Krowi_MenuBuilder-1.0: Cross-version menu builder for WoW Classic and Modern
+-- Krowi_MenuBuilder: Cross-version menu builder for WoW Classic and Modern
 
-local MAJOR, MINOR = "Krowi_MenuBuilder-1.0", KROWI_MENU_LIBRARY_MINOR
-local lib = LibStub:NewLibrary(MAJOR, MINOR)
-if not lib then return end
-
-lib.MAJOR = MAJOR
-lib.MINOR = MINOR
+local sub = KROWI_LIBMAN:NewSubmodule('MenuBuilder', 0)
+if not sub then return end
 
 local menuBuilder = {}
 menuBuilder.__index = menuBuilder
 
 -- Utility: Binds object methods to callback functions (see Description.md for usage)
-function lib.BindCallbacks(obj, methodNames)
+function sub.BindCallbacks(obj, methodNames)
     local callbacks = {}
     for callbackName, methodName in pairs(methodNames) do
         callbacks[callbackName] = function(...)
@@ -63,7 +50,7 @@ local function SetupDefaultTranslations(instance)
     instance.translations["Version"] = instance.translations["Version"] or "Version"
 end
 
-function lib:New(config)
+function sub:New(config)
     local instance = setmetatable({}, menuBuilder)
     instance.config = config or {}
     instance.callbacks = config.callbacks or {}
@@ -373,7 +360,7 @@ function menuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
 end
 
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-    lib.MenuBuilder = menuBuilder
+    sub.MenuBuilder = menuBuilder
     return
 end
 
@@ -628,4 +615,4 @@ function menuBuilder:CreateButtonAndAdd(menu, text, func, isEnabled)
     return button
 end
 
-lib.MenuBuilder = menuBuilder
+sub.MenuBuilder = menuBuilder

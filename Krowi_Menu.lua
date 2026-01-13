@@ -1,31 +1,12 @@
 --[[
     Copyright (c) 2023 Krowi
-
-    All Rights Reserved unless otherwise explicitly stated.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+    Licensed under the terms of the LICENSE file in this repository.
 ]]
 
 ---@diagnostic disable: undefined-global
 
-local MAJOR, MINOR = "Krowi_Menu-1.0", KROWI_MENU_LIBRARY_MINOR
-local lib = LibStub:NewLibrary(MAJOR, MINOR)
-
-if not lib then
-	return
-end
-
--- Store version constants
-lib.MAJOR = MAJOR
-lib.MINOR = MINOR
-
-local menuItem = LibStub("Krowi_MenuItem-1.0")
+local lib = KROWI_LIBMAN:NewLibrary('Krowi_Menu_2', 0, true, false, true)
+if not lib then	return end
 
 -- [[ Other ]] --
 local menuFrame = CreateFrame("Frame", "Krowi_Menu", nil, "UIDropDownMenuTemplate")
@@ -70,7 +51,7 @@ function lib:Add(item)
 end
 
 function lib:AddFull(info)
-    self:Add(menuItem:New(info))
+    self:Add(self.MenuItem:New(info))
 end
 
 function lib:AddTitle(text)
