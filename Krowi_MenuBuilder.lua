@@ -8,8 +8,8 @@
 
 -- Krowi_MenuBuilder: Cross-version menu builder for WoW Classic and Modern
 
-local sub = KROWI_LIBMAN:NewSubmodule('MenuBuilder', 0)
-if not sub then return end
+local sub, parent = KROWI_LIBMAN:NewSubmodule('MenuBuilder', 0)
+if not sub or not parent then return end
 
 local menuBuilder = {}
 menuBuilder.__index = menuBuilder
@@ -26,20 +26,19 @@ function sub.BindCallbacks(obj, methodNames)
 end
 
 local function SetupDefaultCallbacks(instance)
-    local KrowiUtil = LibStub and LibStub("Krowi_Util_2", true)
-    if not KrowiUtil or not KrowiUtil.ReadNestedKeys then
+    if not parent.Util or not parent.Util.ReadNestedKeys then
         return
     end
 
     if not instance.callbacks.KeyIsTrue then
         instance.callbacks.KeyIsTrue = function(filters, keys)
-            return KrowiUtil.ReadNestedKeys(filters, keys)
+            return parent.Util.ReadNestedKeys(filters, keys)
         end
     end
 
     if not instance.callbacks.KeyEqualsText then
         instance.callbacks.KeyEqualsText = function(filters, keys, value)
-            return KrowiUtil.ReadNestedKeys(filters, keys) == value
+            return parent.Util.ReadNestedKeys(filters, keys) == value
         end
     end
 end
@@ -367,7 +366,7 @@ end
 -- Classic Implementation (non-Mainline)
 
 function menuBuilder:Init()
-    self.rootMenu = LibStub("Krowi_Menu-1.0")
+    self.rootMenu = parent
 end
 
 function menuBuilder:Show(anchor, offsetX, offsetY)
@@ -578,7 +577,7 @@ end
 
 function menuBuilder:CreateSubmenuButton(menu, text, func, isEnabled)
     menu = menu or self:GetMenu()
-    return LibStub("Krowi_MenuItem-1.0"):New({
+    return parent.MenuItem:New({
         Text = text,
         Func = func,
         Disabled = isEnabled == false
@@ -587,7 +586,7 @@ end
 
 function menuBuilder:CreateSubmenuRadio(menu, text, isSelectedFunc, onClickFunc, isEnabled)
     menu = menu or self:GetMenu()
-    return LibStub("Krowi_MenuItem-1.0"):New({
+    return parent.MenuItem:New({
         Text = text,
         Checked = isSelectedFunc,
         Func = function()

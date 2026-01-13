@@ -5,7 +5,11 @@
 
 ---@diagnostic disable: undefined-global
 
-local lib = KROWI_LIBMAN:NewLibrary('Krowi_Menu_2', 0, true, false, true)
+local lib = KROWI_LIBMAN:NewLibrary('Krowi_Menu_2', 0, {
+    SetCurrent = true,
+	SetUtil = true,
+    InitLocalization = true,
+})
 if not lib then	return end
 
 -- [[ Other ]] --

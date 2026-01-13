@@ -6,8 +6,10 @@
 ---@diagnostic disable: undefined-global
 ---@diagnostic disable: duplicate-set-field
 
-local sub = KROWI_LIBMAN:NewSubmodule('MenuUtil', 0)
-if not sub then return end
+-- ONLY USED BY KROWIS ACHIEVEMENT FILTER, REFACTOR AND REMOVE THIS FILE LATER
+
+local sub, parent = KROWI_LIBMAN:NewSubmodule('MenuUtil', 0)
+if not sub or not parent then return end
 
 do -- Modern
     function sub:CreateTitle(menu, text)
@@ -45,7 +47,7 @@ do -- Classic
     end
 
     function sub:CreateButton(menu, text, func, isEnabled)
-        return LibStub("Krowi_MenuItem-1.0"):New({
+        return parent.MenuItem:New({
             Text = text,
             Func = func,
             Disabled = isEnabled == false
