@@ -26,7 +26,7 @@ function sub.BindCallbacks(obj, methodNames)
 end
 
 local function SetupDefaultCallbacks(instance)
-    local KrowiUtil = LibStub and LibStub("Krowi_Util-1.0", true)
+    local KrowiUtil = LibStub and LibStub("Krowi_Util_2", true)
     if not KrowiUtil or not KrowiUtil.ReadNestedKeys then
         return
     end
