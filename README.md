@@ -1,4 +1,4 @@
-![Midnight](https://img.shields.io/badge/Midnight-12.0.0-a335ee?style=for-the-badge) ![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![TBC](https://img.shields.io/badge/TBC-2.5.5%20%7C%202.5.4%20%7C%202.5.3%20%7C%202.5.2%20%7C%202.5.1-62c907?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
+![Midnight](https://img.shields.io/badge/Midnight-12.0.0-a335ee?style=for-the-badge) ![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![TBC](https://img.shields.io/badge/TBC-2.5.5-62c907?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
 [![CurseForge](https://img.shields.io/badge/curseforge-download-F16436?style=for-the-badge&logo=curseforge&logoColor=white)](https://www.curseforge.com/wow/addons/krowi-menu) [![Wago](https://img.shields.io/badge/Wago-Download-c1272d?style=for-the-badge)](https://addons.wago.io/addons/krowi-menu)<br>
 [![Discord](https://img.shields.io/badge/discord-join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/mdBFQJYeQZ) [![PayPal](https://img.shields.io/badge/paypal-donate-002991.svg?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=9QEDV37APQ6YJ)
 
@@ -6,30 +6,30 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 
 ## Features
 
-### Menu System (`Krowi_Menu-1.0`)
+### Menu System (`Krowi_Menu`)
 - **Simple API**: Easy-to-use methods for building menus programmatically
 - **Flexible Menu Items**: Support for titles, separators, checkable items, and disabled states
 - **Nested Menus**: Create hierarchical menu structures with children
 - **Smart Positioning**: Automatic submenu repositioning to keep menus on-screen (Classic)
 - **Custom Styling**: Control menu positioning, frame strata, and frame levels
 - **Selection State**: Track and refresh selected menu items
-- **LibStub Support**: Standard LibStub library structure for dependency management
+- **Krowi_LibMan Integration**: Modern library management with Krowi_LibMan
 
-### Menu Item Builder (`Krowi_MenuItem-1.0`)
+### Menu Item Builder (`Krowi_MenuItem`)
 - **Item Creation**: Build menu items with custom properties
 - **External Links**: Integration with popup dialogs for displaying external links
 - **Child Items**: Support for nested menu structures
 - **Flexible Options**: Checkable, disabled, and title items
 
-### Menu Utilities (`Krowi_MenuUtil-1.0`)
+### Menu Utilities (`Krowi_MenuUtil`)
 - **Cross-Version Compatibility**: Unified API for both modern (Mainline) and Classic WoW versions
 - **Automatic Detection**: Detects game version and uses appropriate menu system
 - **Simplified Interface**: Consistent methods across all WoW versions
 
-### Menu Builder (`Krowi_MenuBuilder-1.0`)
+### Menu Builder (`Krowi_MenuBuilder`)
 - **High-Level Abstraction**: Simplified API for building complex menus with checkboxes, radio buttons, and filters
 - **Callback-Based Architecture**: Flexible callback system for handling menu interactions and state management
-- **Smart Defaults**: Automatic integration with `Krowi_Util-1.0` for common operations (KeyIsTrue, KeyEqualsText)
+- **Smart Defaults**: Automatic integration with `Krowi_Util_2` for common operations (KeyIsTrue, KeyEqualsText)
 - **Callback Helper**: `BindCallbacks` utility eliminates boilerplate when binding object methods to callbacks
 - **Build Version Filters**: Built-in support for creating hierarchical version filter menus with Select/Deselect All
 - **Cross-Version Support**: Unified API that works seamlessly on both Modern (Mainline) and Classic WoW
@@ -41,7 +41,7 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 ### Basic Menu Setup
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0")
+local menu = KROWI_LIBMAN:GetLibrary('Krowi_Menu_2')
 local pages = {} -- Table with data
 
 menu:Clear() -- Reset menu
@@ -62,8 +62,8 @@ menu:Open()
 ### Advanced Example with Nested Menus
 
 ```lua
-local menu = LibStub("Krowi_Menu-1.0")
-local menuItem = LibStub("Krowi_MenuItem-1.0")
+local menu = KROWI_LIBMAN:GetLibrary('Krowi_Menu_2')
+local menuItem = KROWI_LIBMAN:GetLibrary('Krowi_MenuItem_2')
 
 menu:Clear()
 
@@ -87,7 +87,7 @@ menu:Open("cursor")
 ### MenuBuilder Example
 
 ```lua
-local MenuBuilder = LibStub("Krowi_MenuBuilder-1.0")
+local MenuBuilder = KROWI_LIBMAN:GetLibrary('Krowi_MenuBuilder_2')
 
 -- Configure MenuBuilder with callbacks using BindCallbacks helper
 local config = {
@@ -203,11 +203,11 @@ end
 
 ## API Reference
 
-### Krowi_Menu-1.0
+### Krowi_Menu
 
 #### Creating a Menu
 ```lua
-local menu = LibStub("Krowi_Menu-1.0")
+local menu = KROWI_LIBMAN:GetLibrary('Krowi_Menu_2')
 ```
 
 #### Menu Functions
@@ -253,11 +253,11 @@ local menu = LibStub("Krowi_Menu-1.0")
 | `Children` | table | nil | Array of child menu items for nested menus |
 | `IsSeparator` | boolean | nil | Whether this item is a separator line |
 
-### Krowi_MenuItem-1.0
+### Krowi_MenuItem
 
 #### Creating Menu Items
 ```lua
-local menuItem = LibStub("Krowi_MenuItem-1.0")
+local menuItem = KROWI_LIBMAN:GetLibrary('Krowi_MenuItem_2')
 ```
 
 #### MenuItem Functions
@@ -270,11 +270,11 @@ local menuItem = LibStub("Krowi_MenuItem-1.0")
 | `AddTitle(text)` | `text` (string) | - | Adds a title child to this menu item |
 | `AddSeparator()` | - | MenuItem | Adds a separator child to this menu item |
 
-### Krowi_MenuUtil-1.0
+### Krowi_MenuUtil
 
 #### Creating Utilities Instance
 ```lua
-local menuUtil = LibStub("Krowi_MenuUtil-1.0")
+local menuUtil = KROWI_LIBMAN:GetLibrary('Krowi_MenuUtil_2')
 ```
 
 #### MenuUtil Functions
@@ -287,13 +287,13 @@ local menuUtil = LibStub("Krowi_MenuUtil-1.0")
 | `AddChildMenu(menu, child)` | `menu` (menu), `child` (MenuItem) | Adds a child to the menu (Classic only) |
 | `CreateButtonAndAdd(menu, text, func, isEnabled)` | `menu` (menu), `text` (string), `func` (function), `isEnabled` (boolean) | Creates and adds a button in one call |
 
-**Note:** MenuUtil automatically detects whether the game is running Mainline or Classic and uses the appropriate menu system. On Mainline, it uses the modern menu API. On Classic versions, it uses the `Krowi_MenuItem-1.0` library.
+**Note:** MenuUtil automatically detects whether the game is running Mainline or Classic and uses the appropriate menu system. On Mainline, it uses the modern menu API. On Classic versions, it uses the `Krowi_MenuItem` library.
 
-### Krowi_MenuBuilder-1.0
+### Krowi_MenuBuilder
 
 #### Creating a MenuBuilder Instance
 ```lua
-local MenuBuilder = LibStub("Krowi_MenuBuilder-1.0")
+local MenuBuilder = KROWI_LIBMAN:GetLibrary('Krowi_MenuBuilder_2')
 local builder = MenuBuilder:New(config)
 ```
 
@@ -342,14 +342,14 @@ MenuBuilder uses callbacks to interact with your addon's data and respond to use
 | Callback | Parameters | Returns | Required | Description |
 |----------|------------|---------|----------|-------------|
 | `GetCheckBoxStateText` | `text, filters, keys` | string | No | Modifies checkbox text based on state. Default: returns text unchanged |
-| `KeyIsTrue` | `filters, keys` | boolean | No* | Checks if a nested key is true. Default: uses `Krowi_Util.ReadNestedKeys` if available |
+| `KeyIsTrue` | `filters, keys` | boolean | No* | Checks if a nested key is true. Default: uses `Krowi_Util_2.ReadNestedKeys` if available |
 | `OnCheckboxSelect` | `filters, keys, ...` | void | Yes | Called when checkbox is clicked. Varargs are custom data passed to `CreateCheckbox` |
 
 **Radio Button Callbacks:**
 
 | Callback | Parameters | Returns | Required | Description |
 |----------|------------|---------|----------|-------------|
-| `KeyEqualsText` | `filters, keys, value` | boolean | No* | Checks if nested key equals value. Default: uses `Krowi_Util.ReadNestedKeys` if available |
+| `KeyEqualsText` | `filters, keys, value` | boolean | No* | Checks if nested key equals value. Default: uses `Krowi_Util_2.ReadNestedKeys` if available |
 | `OnRadioSelect` | `filters, keys, value, ...` | void | Yes | Called when radio button is selected. Varargs are custom data passed to `CreateRadio` |
 
 **Build Version Filter Callbacks (Optional - only needed if using `CreateBuildVersionFilter`):**
@@ -370,7 +370,7 @@ MenuBuilder uses callbacks to interact with your addon's data and respond to use
 | `OnAllSelect` | `filters, keys, value` | void | Called by `CreateSelectDeselectAll` for batch operations. Used by `CreateSelectDeselectAllButtons` |
 
 **Notes:**
-- *`KeyIsTrue` and `KeyEqualsText` have smart defaults if `Krowi_Util-1.0` library is available
+- *`KeyIsTrue` and `KeyEqualsText` have smart defaults if `Krowi_Util_2` library is available
 - `keys` parameter is always an array representing nested path, e.g., `{"Filters", "ShowCompleted"}`
 - `filters` is your addon's filter data structure
 - Varargs (`...`) allow passing custom context to callbacks
@@ -462,5 +462,5 @@ All methods support optional `menu` parameter. If omitted, uses `GetMenu()`.
 - Any scenario requiring dropdown menu functionality
 
 ## Requirements
-- LibStub
-- Krowi_Util-1.0 (optional, for default MenuBuilder callbacks)
+- Krowi_LibMan
+- Krowi_Util_2 (optional, for default MenuBuilder callbacks)
