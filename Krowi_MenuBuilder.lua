@@ -44,9 +44,9 @@ local function SetupDefaultCallbacks(instance)
 end
 
 local function SetupDefaultTranslations(instance)
-    instance.translations["Select All"] = instance.translations["Select All"] or "Select All"
-    instance.translations["Deselect All"] = instance.translations["Deselect All"] or "Deselect All"
-    instance.translations["Version"] = instance.translations["Version"] or "Version"
+    instance.translations['Select All'] = instance.translations['Select All'] or 'Select All'
+    instance.translations['Deselect All'] = instance.translations['Deselect All'] or 'Deselect All'
+    instance.translations['Version'] = instance.translations['Version'] or 'Version'
 end
 
 function sub:New(config)
@@ -56,7 +56,7 @@ function sub:New(config)
     instance.translations = config.translations or {}
 
     -- Generate unique tag for this instance
-    instance.uniqueTag = config.uniqueTag or tostring(instance):match("0x(%x+)") or tostring(math.random(100000, 999999))
+    instance.uniqueTag = config.uniqueTag or tostring(instance):match('0x(%x+)') or tostring(math.random(100000, 999999))
 
     SetupDefaultTranslations(instance)
     SetupDefaultCallbacks(instance)
@@ -146,7 +146,7 @@ end
 
 function menuBuilder:SetupMenuForModern(button)
     if not button.SetupMenu then
-        error("Button must have SetupMenu method (WowStyle1FilterDropdownMixin)")
+        error('Button must have SetupMenu method (WowStyle1FilterDropdownMixin)')
     end
 
     button:SetupMenu(function(owner, menu)
@@ -164,7 +164,7 @@ end
 function menuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
     local menuFunc = createMenuFunc or self.CreateMenu
     if not menuFunc then
-        error("ShowPopup requires a createMenuFunc parameter or self.CreateMenu function")
+        error('ShowPopup requires a createMenuFunc parameter or self.CreateMenu function')
     end
 
     local menu = MenuUtil.CreateContextMenu(anchor or UIParent, function(owner, menuObj)
@@ -173,7 +173,7 @@ function menuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
         menuFunc(self)
     end)
     if anchor then
-        menu:SetPoint("TOPLEFT", anchor or UIParent, "BOTTOMLEFT", offsetX or 0, offsetY or 0)
+        menu:SetPoint('TOPLEFT', anchor or UIParent, 'BOTTOMLEFT', offsetX or 0, offsetY or 0)
     end
 end
 
@@ -246,7 +246,7 @@ end
 
 function menuBuilder:CreateMinorVersionGroup(majorGroup, filters, major, minor)
     return majorGroup:CreateCheckbox(
-        major.Major .. "." .. minor.Minor .. ".x",
+        major.Major .. '.' .. minor.Minor .. '.x',
         function()
             return self:IsMinorVersionChecked(filters, minor)
         end,
@@ -258,7 +258,7 @@ end
 
 function menuBuilder:CreateMajorVersionGroup(version, filters, major)
     return version:CreateCheckbox(
-        major.Major .. ".x.x",
+        major.Major .. '.x.x',
         function()
             return self:IsMajorVersionChecked(filters, major)
         end,
@@ -272,7 +272,7 @@ function menuBuilder:CreateSelectDeselectAllVersions(version, filters)
     self:CreateDivider(version)
 
     local selectAll = version:CreateButton(
-        self.translations["Select All"],
+        self.translations['Select All'],
         function()
             self:OnAllVersionsSelect(filters, true)
         end
@@ -280,7 +280,7 @@ function menuBuilder:CreateSelectDeselectAllVersions(version, filters)
     selectAll:SetResponse(MenuResponse.Refresh)
 
     local deselectAll = version:CreateButton(
-        self.translations["Deselect All"],
+        self.translations['Deselect All'],
         function()
             self:OnAllVersionsSelect(filters, false)
         end
@@ -291,7 +291,7 @@ end
 function menuBuilder:CreateBuildVersionFilter(filters, menu)
     menu = menu or self:GetMenu()
 
-    local version = menu:CreateButton(self.translations["Version"])
+    local version = menu:CreateButton(self.translations['Version'])
     if self.callbacks.CreateBuildVersionFilterGroups then
         self.callbacks.CreateBuildVersionFilterGroups(version, filters, self)
     end
@@ -313,8 +313,8 @@ function menuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, c
 end
 
 function menuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
-    self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
-    self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
+    self:CreateSelectDeselectAll(menu, self.translations['Select All'], filters, keys, true, callback)
+    self:CreateSelectDeselectAll(menu, self.translations['Deselect All'], filters, keys, false, callback)
 end
 
 function menuBuilder:CreateButton(menu, text, func)
@@ -380,12 +380,12 @@ end
 function menuBuilder:ShowPopup(createMenuFunc, anchor, offsetX, offsetY)
     local menuFunc = createMenuFunc or self.CreateMenu
     if not menuFunc then
-        error("ShowPopup requires a createMenuFunc parameter or self.CreateMenu function")
+        error('ShowPopup requires a createMenuFunc parameter or self.CreateMenu function')
     end
 
     self.rootMenu:Clear()
     menuFunc(self)
-    self.rootMenu:Toggle(anchor or "cursor", offsetX or 0, offsetY or 0)
+    self.rootMenu:Toggle(anchor or 'cursor', offsetX or 0, offsetY or 0)
 end
 
 function menuBuilder:Close()
@@ -474,7 +474,7 @@ end
 
 function menuBuilder:CreateMinorVersionGroup(majorGroup, filters, major, minor)
     return majorGroup:AddFull({
-        Text = major.Major .. "." .. minor.Minor .. ".x",
+        Text = major.Major .. '.' .. minor.Minor .. '.x',
         Checked = function()
             return self:IsMinorVersionChecked(filters, minor)
         end,
@@ -490,7 +490,7 @@ end
 
 function menuBuilder:CreateMajorVersionGroup(version, filters, major)
     return version:AddFull({
-        Text = major.Major .. ".x.x",
+        Text = major.Major .. '.x.x',
         Checked = function()
             return self:IsMajorVersionChecked(filters, major)
         end,
@@ -508,7 +508,7 @@ function menuBuilder:CreateSelectDeselectAllVersions(version, filters)
     self:CreateDivider(version)
 
     version:AddFull({
-        Text = self.translations["Select All"],
+        Text = self.translations['Select All'],
         Func = function()
             self:OnAllVersionsSelect(filters, true)
             UIDropDownMenu_RefreshAll(UIDROPDOWNMENU_OPEN_MENU)
@@ -516,7 +516,7 @@ function menuBuilder:CreateSelectDeselectAllVersions(version, filters)
         KeepShownOnClick = true
     })
     version:AddFull({
-        Text = self.translations["Deselect All"],
+        Text = self.translations['Deselect All'],
         Func = function()
             self:OnAllVersionsSelect(filters, false)
             UIDropDownMenu_RefreshAll(UIDROPDOWNMENU_OPEN_MENU)
@@ -528,7 +528,7 @@ end
 function menuBuilder:CreateBuildVersionFilter(filters, menu)
     menu = menu or self:GetMenu()
 
-    local version = self:CreateSubmenuButton(menu, self.translations["Version"])
+    local version = self:CreateSubmenuButton(menu, self.translations['Version'])
     if self.callbacks.CreateBuildVersionFilterGroups then
         self.callbacks.CreateBuildVersionFilterGroups(version, filters, self)
     end
@@ -551,8 +551,8 @@ function menuBuilder:CreateSelectDeselectAll(menu, text, filters, keys, value, c
 end
 
 function menuBuilder:CreateSelectDeselectAllButtons(menu, filters, keys, callback)
-    self:CreateSelectDeselectAll(menu, self.translations["Select All"], filters, keys, true, callback)
-    self:CreateSelectDeselectAll(menu, self.translations["Deselect All"], filters, keys, false, callback)
+    self:CreateSelectDeselectAll(menu, self.translations['Select All'], filters, keys, true, callback)
+    self:CreateSelectDeselectAll(menu, self.translations['Deselect All'], filters, keys, false, callback)
 end
 
 function menuBuilder:CreateButton(menu, text, func)

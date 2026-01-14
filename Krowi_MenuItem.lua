@@ -11,7 +11,7 @@ if not sub then return end
 sub.__index = sub
 function sub:New(info, hideOnClick)
     local instance = setmetatable({}, sub)
-    if type(info) == "string" then
+    if type(info) == 'string' then
         info = {
             Text = info,
             KeepShownOnClick = not hideOnClick

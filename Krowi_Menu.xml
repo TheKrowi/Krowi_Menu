@@ -4,8 +4,8 @@
  -->
 
 <Ui>
-	<Script file="Krowi_Menu.lua"/>
-	<Script file="Krowi_MenuItem.lua"/>
-	<Script file="Krowi_MenuUtil.lua"/>
-    <Script file="Krowi_MenuBuilder.lua" />
+	<Script file='Krowi_Menu.lua'/>
+	<Script file='Krowi_MenuItem.lua'/>
+	<Script file='Krowi_MenuUtil.lua'/>
+    <Script file='Krowi_MenuBuilder.lua' />
 </Ui>

@@ -13,7 +13,7 @@ local lib = KROWI_LIBMAN:NewLibrary('Krowi_Menu_2', 0, {
 if not lib then	return end
 
 -- [[ Other ]] --
-local menuFrame = CreateFrame("Frame", "Krowi_Menu", nil, "UIDropDownMenuTemplate")
+local menuFrame = CreateFrame('Frame', 'Krowi_Menu', nil, 'UIDropDownMenuTemplate')
 local menu = {}
 
 local function Convert(srcItem)
@@ -22,7 +22,7 @@ local function Convert(srcItem)
 	end
 
 	local item = {}
-	item.text = srcItem.Text or "INFO TEXT"
+	item.text = srcItem.Text or 'INFO TEXT'
 	item.checked = srcItem.Checked
 	item.func = srcItem.Func
 	item.isTitle = srcItem.IsTitle
@@ -83,14 +83,14 @@ end
 
 function lib:Open(anchor, offsetX, offsetY, point, relativePoint, frameStrata, frameLevel)
     -- Make sure optional values are set to default if not used
-	anchor = anchor or "cursor"
+	anchor = anchor or 'cursor'
 
-	menuFrame.displayMode = "MENU"
+	menuFrame.displayMode = 'MENU'
 	menuFrame.xOffset = offsetX
 	menuFrame.yOffset = offsetY
 	menuFrame.point = point
 	menuFrame.relativePoint = relativePoint
-	UIDropDownMenu_SetFrameStrata(menuFrame, frameStrata or "FULLSCREEN_DIALOG")
+	UIDropDownMenu_SetFrameStrata(menuFrame, frameStrata or 'FULLSCREEN_DIALOG')
 	if frameStrata and not frameLevel then
 		menuFrame:Raise()
 	end
@@ -98,7 +98,7 @@ function lib:Open(anchor, offsetX, offsetY, point, relativePoint, frameStrata, f
 		menuFrame:SetFrameLevel(frameLevel)
 	end
 
-	UIDropDownMenu_Initialize(menuFrame, Initialize, "MENU", nil, menu)
+	UIDropDownMenu_Initialize(menuFrame, Initialize, 'MENU', nil, menu)
 	ToggleDropDownMenu(1, nil, menuFrame, anchor, offsetX, offsetY, menu, nil, nil)
 end
 
@@ -139,7 +139,7 @@ end
 
 function lib:UIDropDownMenu_RefreshAll(frame, useValue)
 	for dropdownLevel = UIDROPDOWNMENU_MENU_LEVEL, 2, -1 do
-		local listFrame = _G["DropDownList"..dropdownLevel]
+		local listFrame = _G['DropDownList'..dropdownLevel]
 		if listFrame:IsShown() then
 			self:UIDropDownMenu_Refresh(frame, nil, dropdownLevel)
 		end
@@ -154,11 +154,11 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if not dropdownLevel then
 		dropdownLevel = UIDROPDOWNMENU_MENU_LEVEL
 	end
-	local listFrame = _G["DropDownList"..dropdownLevel]
+	local listFrame = _G['DropDownList'..dropdownLevel]
 	listFrame.numButtons = listFrame.numButtons or 0
 	-- Just redraws the existing menu
 	for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-		local button = _G["DropDownList"..dropdownLevel.."Button"..i]
+		local button = _G['DropDownList'..dropdownLevel..'Button'..i]
 		local checked = nil
 		if i <= listFrame.numButtons then
 			-- See if checked or not
@@ -168,17 +168,17 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				end
 			end
 		end
-		if button.checked and type(button.checked) == "function" then
+		if button.checked and type(button.checked) == 'function' then
 			checked = button.checked(button)
 		end
 		if not button.notCheckable and button:IsShown() then
 			-- If checked show check image
-			local checkImage = _G["DropDownList"..dropdownLevel.."Button"..i.."Check"]
-			local uncheckImage = _G["DropDownList"..dropdownLevel.."Button"..i.."UnCheck"]
+			local checkImage = _G['DropDownList'..dropdownLevel..'Button'..i..'Check']
+			local uncheckImage = _G['DropDownList'..dropdownLevel..'Button'..i..'UnCheck']
 			if checked then
 				if not button.ignoreAsMenuSelection then
 					somethingChecked = true
-					local icon = GetChild(frame, frame:GetName(), "Icon")
+					local icon = GetChild(frame, frame:GetName(), 'Icon')
 					if (button.iconOnly and button.icon) then
 						UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo)
 					elseif useValue then
@@ -211,17 +211,17 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	end
 	if somethingChecked == nil then
 		UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6)
-		local icon = GetChild(frame, frame:GetName(), "Icon")
+		local icon = GetChild(frame, frame:GetName(), 'Icon')
 		if icon then
 			icon:Hide()
 		end
 	end
 	if not frame.noResize then
 		for i=1, UIDROPDOWNMENU_MAXBUTTONS do
-			local button = _G["DropDownList"..dropdownLevel.."Button"..i]
+			local button = _G['DropDownList'..dropdownLevel..'Button'..i]
 			button:SetWidth(maxWidth)
 		end
-		UIDropDownMenu_RefreshDropDownSize(_G["DropDownList"..dropdownLevel])
+		UIDropDownMenu_RefreshDropDownSize(_G['DropDownList'..dropdownLevel])
 	end
 end
 
@@ -229,12 +229,12 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     return
 end
 
-hooksecurefunc("ToggleDropDownMenu", function(level)
+hooksecurefunc('ToggleDropDownMenu', function(level)
 	if not level or level <= 1 then
 		return
 	end
 
-	local listFrame = GetCurrentEnvironment()["DropDownList"..level]
+	local listFrame = GetCurrentEnvironment()['DropDownList'..level]
 
 	if not listFrame or not listFrame:IsShown() then
 		return
@@ -267,12 +267,12 @@ hooksecurefunc("ToggleDropDownMenu", function(level)
 
 	-- Determine horizontal anchor based on original positioning
 	local newPoint, newRelativePoint
-	if point == "TOPLEFT" or point == "BOTTOMLEFT" then
-		newPoint = "TOPLEFT"
-		newRelativePoint = "TOPRIGHT"
-	elseif point == "TOPRIGHT" or point == "BOTTOMRIGHT" then
-		newPoint = "TOPRIGHT"
-		newRelativePoint = "TOPLEFT"
+	if point == 'TOPLEFT' or point == 'BOTTOMLEFT' then
+		newPoint = 'TOPLEFT'
+		newRelativePoint = 'TOPRIGHT'
+	elseif point == 'TOPRIGHT' or point == 'BOTTOMRIGHT' then
+		newPoint = 'TOPRIGHT'
+		newRelativePoint = 'TOPLEFT'
 	else
 		newPoint = point
 		newRelativePoint = relativePoint
