@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2.1 - 2026-01-24
+### Removed
+- MenuBuilder: Deprecated build version helpers (`CreateBuildVersionFilter`, major/minor group builders, Select/Deselect All versions) were dropped; consumers should construct version menus externally
+
 ## 2.0 - 2026-01-14
 ### Changed
 - Migrated from LibStub to Krowi_LibMan library management system
