@@ -31,7 +31,6 @@ A lightweight menu library for World of Warcraft addon development that simplifi
 - **Callback-Based Architecture**: Flexible callback system for handling menu interactions and state management
 - **Smart Defaults**: Automatic integration with `Krowi_Util_2` for common operations (KeyIsTrue, KeyEqualsText)
 - **Callback Helper**: `BindCallbacks` utility eliminates boilerplate when binding object methods to callbacks
-- **Build Version Filters**: Built-in support for creating hierarchical version filter menus with Select/Deselect All
 - **Cross-Version Support**: Unified API that works seamlessly on both Modern (Mainline) and Classic WoW
 - **Instance-Based**: Create multiple independent menu builders with isolated state and configurations
 - **Type Safety**: Full parameter validation with helpful error messages
@@ -315,14 +314,7 @@ local config = {
         KeyIsTrue = function(filters, keys) return false end,
         OnCheckboxSelect = function(filters, keys, ...) end,
         KeyEqualsText = function(filters, keys, value) return false end,
-        OnRadioSelect = function(filters, keys, value, ...) end,
-        -- Optional version filter callbacks
-        IsMinorVersionChecked = function(filters, minor) return false end,
-        OnMinorVersionSelect = function(filters, minor) end,
-        IsMajorVersionChecked = function(filters, major) return false end,
-        OnMajorVersionSelect = function(filters, major) end,
-        OnAllVersionsSelect = function(filters, value) end,
-        CreateBuildVersionFilterGroups = function(version, filters, menuBuilder) end
+        OnRadioSelect = function(filters, keys, value, ...) end
     },
     translations = {
         ["Select All"] = "Select All",
@@ -351,17 +343,6 @@ MenuBuilder uses callbacks to interact with your addon's data and respond to use
 |----------|------------|---------|----------|-------------|
 | `KeyEqualsText` | `filters, keys, value` | boolean | No* | Checks if nested key equals value. Default: uses `Krowi_Util_2.ReadNestedKeys` if available |
 | `OnRadioSelect` | `filters, keys, value, ...` | void | Yes | Called when radio button is selected. Varargs are custom data passed to `CreateRadio` |
-
-**Build Version Filter Callbacks (Optional - only needed if using `CreateBuildVersionFilter`):**
-
-| Callback | Parameters | Returns | Description |
-|----------|------------|---------|-------------|
-| `IsMinorVersionChecked` | `filters, minor` | boolean | Returns whether all patches in minor version are checked |
-| `OnMinorVersionSelect` | `filters, minor` | void | Called when minor version checkbox is toggled |
-| `IsMajorVersionChecked` | `filters, major` | boolean | Returns whether all versions in major version are checked |
-| `OnMajorVersionSelect` | `filters, major` | void | Called when major version checkbox is toggled |
-| `OnAllVersionsSelect` | `filters, value` | void | Called when Select All / Deselect All is clicked |
-| `CreateBuildVersionFilterGroups` | `version, filters, menuBuilder` | void | Builds the version filter menu structure. Called by `CreateBuildVersionFilter` |
 
 **General Callbacks:**
 
@@ -436,21 +417,18 @@ All methods support optional `menu` parameter. If omitted, uses `GetMenu()`.
 | `AddChildMenu(menu, child)` | `menu`, `child` (menu/MenuItem) | **Classic only**: Adds child menu to parent. **Modern**: No-op (auto-managed) |
 | `CreateButtonAndAdd(menu, text, func, isEnabled)` | `menu`, `text` (string), `func` (function), `isEnabled` (boolean) | **Modern**: Same as `CreateSubmenuButton`. **Classic**: Creates and adds button in one call |
 
-**Specialized Menu Builders:**
+**Batch Helpers:**
 
 | Function | Parameters | Description |
 |----------|------------|-------------|
-| `CreateBuildVersionFilter(filters, menu)` | `filters` (table), `menu` | Creates build/patch version filter submenu. Requires version filter callbacks |
-| `CreateSelectDeselectAllVersions(version, filters)` | `version` (menu), `filters` (table) | Adds Select All / Deselect All buttons for version filters |
 | `CreateSelectDeselectAll(menu, text, filters, keys, value, callback)` | `menu`, `text` (string), `filters` (table), `keys` (array), `value` (boolean), `callback` (function) | Creates button for batch select/deselect. `callback` defaults to `OnAllSelect` |
 | `CreateSelectDeselectAllButtons(menu, filters, keys, callback)` | `menu`, `filters` (table), `keys` (array), `callback` (function) | Creates both Select All and Deselect All buttons |
-| `CreateMinorVersionGroup(majorGroup, filters, major, minor)` | `majorGroup` (menu), `filters` (table), `major` (table), `minor` (table) | Creates minor version checkbox (e.g., "11.0.x"). Used internally by version filters |
-| `CreateMajorVersionGroup(version, filters, major)` | `version` (menu), `filters` (table), `major` (table) | Creates major version checkbox (e.g., "11.x.x"). Used internally by version filters |
 
 **Important Notes:**
 - **Modern vs Classic**: Some methods behave differently or are no-ops depending on `WOW_PROJECT_ID`
 - **Menu Parameter**: When `menu` is `nil`, methods automatically use `GetMenu()`
 - **Varargs**: Extra parameters passed to `CreateCheckbox` and `CreateRadio` are forwarded to callbacks for custom context
+- **Version menus**: Build version helper APIs were removed in 2.1; construct version filters externally using the general menu primitives
 
 ## Use Cases
 - Right-click context menus

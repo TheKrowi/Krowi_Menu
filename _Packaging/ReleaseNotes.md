@@ -1,12 +1,2 @@
-### Changed
-- Migrated from LibStub to Krowi_LibMan library management system
-- Renamed all library files, removing "-1.0" suffix:
-  - Krowi_Menu-1.0.lua → Krowi_Menu.lua
-  - Krowi_MenuBuilder-1.0.lua → Krowi_MenuBuilder.lua
-  - Krowi_MenuItem-1.0.lua → Krowi_MenuItem.lua
-  - Krowi_MenuUtil-1.0.lua → Krowi_MenuUtil.lua
-  - Krowi_Menu-1.0.xml → Krowi_Menu.xml
-- Updated library initialization to use KROWI_LIBMAN:NewLibrary with new naming convention ('Krowi_Menu_2', 'Krowi_MenuBuilder_2', etc.)
-- Simplified copyright headers across all files
-- Updated MenuBuilder to use Krowi_Util_2 library
-- Code style: Converted double quotes to single quotes throughout codebase
+### Removed (2.1)
+- MenuBuilder: Deprecated build version helpers (`CreateBuildVersionFilter`, major/minor group builders, Select/Deselect All versions) were dropped; consumers should construct version menus externally
