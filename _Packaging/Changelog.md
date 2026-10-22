@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 2.2
+## 2.2 - 2026-10-22
 ### Added
 - MenuBuilder: `New(config)` takes `modern = true` to build that menu with Blizzard's menu system on any client, not only Retail; set it up with `SetupMenuForModern` or open it with `ShowPopup`, as on Retail. WoW Forever runs Retail's interface and has Blizzard's menus. Without the field every builder works as before
 

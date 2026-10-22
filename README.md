@@ -1,4 +1,4 @@
-![Midnight](https://img.shields.io/badge/Midnight-12.0.0-a335ee?style=for-the-badge) ![Retail](https://img.shields.io/badge/Retail-11.2.7-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.3-28ae7e?style=for-the-badge) ![TBC](https://img.shields.io/badge/TBC-2.5.5-62c907?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.8-c39361?style=for-the-badge)<br>
+![Retail](https://img.shields.io/badge/Retail-12.1.5-008833?style=for-the-badge) ![Mists](https://img.shields.io/badge/Mists-5.5.4-28ae7e?style=for-the-badge) ![TBC](https://img.shields.io/badge/TBC-2.5.6-62c907?style=for-the-badge) ![Forever](https://img.shields.io/badge/Forever-1.60.1-e6cc80?style=for-the-badge) ![Classic](https://img.shields.io/badge/Classic-1.15.9-c39361?style=for-the-badge)<br>
 [![CurseForge](https://img.shields.io/badge/curseforge-download-F16436?style=for-the-badge&logo=curseforge&logoColor=white)](https://www.curseforge.com/wow/addons/krowi-menu) [![Wago](https://img.shields.io/badge/Wago-Download-c1272d?style=for-the-badge)](https://addons.wago.io/addons/krowi-menu)<br>
 [![Discord](https://img.shields.io/badge/discord-join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/mdBFQJYeQZ) [![PayPal](https://img.shields.io/badge/paypal-donate-002991.svg?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=9QEDV37APQ6YJ)
 
@@ -305,6 +305,7 @@ The configuration object passed to `MenuBuilder:New(config)` supports the follow
 | `callbacks` | table | Yes | Table of callback functions for menu interactions (see Callback Reference below) |
 | `translations` | table | No | Table of localized strings. Defaults: `["Select All"]`, `["Deselect All"]`, `["Version"]` |
 | `uniqueTag` | string | No | Unique identifier for this instance. Auto-generated from instance address if not provided |
+| `modern` | boolean | No | Build this menu with Blizzard's menu system on any client, as on Retail (2.2). Use it where the client runs Retail's interface, such as WoW Forever, and set the menu up with `SetupMenuForModern` or open it with `ShowPopup`. Retail always uses Blizzard's menus; without the field every other client uses `UIDropDownMenu` |
 
 **Example Configuration:**
 ```lua
