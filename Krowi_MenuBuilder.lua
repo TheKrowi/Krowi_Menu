@@ -51,8 +51,9 @@ local function SetupDefaultTranslations(instance)
 end
 
 function sub:New(config)
-    local instance = setmetatable({}, config and config.modern and modernMenuBuilder or menuBuilder)
-    instance.config = config or {}
+    config = config or {}
+    local instance = setmetatable({}, config.modern and modernMenuBuilder or menuBuilder)
+    instance.config = config
     instance.callbacks = config.callbacks or {}
     instance.translations = config.translations or {}
 
@@ -279,7 +280,8 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     return
 end
 
--- Every other client: a builder made with config.modern keeps Blizzard's menus (WoW Forever runs Retail's interface)
+-- Every other client: a builder made with config.modern keeps Blizzard's menus (WoW Forever runs Retail's interface). This copies
+-- the methods defined so far, so a method both halves share goes above this point; below it only the Classic half redefines them
 modernMenuBuilder = {}
 for name, method in next, menuBuilder do
     modernMenuBuilder[name] = method
