@@ -301,6 +301,7 @@ The configuration object passed to `MenuBuilder:New(config)` supports the follow
 | `callbacks` | table | Yes | Table of callback functions for menu interactions (see Callback Reference below) |
 | `translations` | table | No | Table of localized strings. Defaults: `["Select All"]`, `["Deselect All"]`, `["Version"]` |
 | `uniqueTag` | string | No | Unique identifier for this instance. Auto-generated from instance address if not provided |
+| `modern` | boolean | No | Build this menu with Blizzard's menu system on any client, as on Retail (2.2). Use it where the client runs Retail's interface, such as WoW Forever, and set the menu up with `SetupMenuForModern` or open it with `ShowPopup`. Retail always uses Blizzard's menus; without the field every other client uses `UIDropDownMenu` |
 
 **Example Configuration:**
 ```lua
